@@ -916,82 +916,78 @@ html[data-theme="dark"] .opt.correct .k,html[data-theme="dark"] .opt.wrong .k{co
      5. 分页地址变换
      ========================================================================== */
   function genAddr(rng, diff) {
-    var hex = rng() < 0.5;
-    var pageSize = hex ? pick(rng, [1024, 2048]) : pick(rng, [1024, 2048, 4096]);
-    var pages = ri(rng, 8, 16);
-    var blocks = uniqNums(rng, pages, 0, 31);
-    if (blocks.length < pages) blocks = [];
-
-    if (!hex) {
-      var page = ri(rng, 0, pages - 1);
-      var off = ri(rng, 0, pageSize - 1);
-      var logical = page * pageSize + off;
-      var block = blocks[page];
-      var phys = block * pageSize + off;
-      var prompt = '<p>某分页系统页面大小为 <b>' + pageSize + 'B</b>，某进程的页表如下：</p>' +
-        '<table class="tbl pt"><thead><tr><th>页号</th>' + blocks.map(function (_, i) { return '<th>' + i + '</th>'; }).join('') +
-        '</tr></thead><tbody><tr><td>物理块号</td>' + blocks.map(function (b) { return '<td>' + b + '</td>'; }).join('') +
-        '</tr></tbody></table><p>逻辑地址 <b>' + logical + '</b> 对应的页号、页内偏移和物理地址分别是多少？</p>';
-      var answer = '<p class="mono">页号 = ⌊' + logical + ' ÷ ' + pageSize + '⌋ = ' + page +
-        '，页内偏移 = ' + logical + ' mod ' + pageSize + ' = ' + off + '</p>' +
-        '<p class="mono">查页表：第 ' + page + ' 页在第 ' + block + ' 块</p>' +
-        '<p class="mono">物理地址 = ' + block + ' × ' + pageSize + ' + ' + off + ' = <b>' + phys + '</b></p>';
-      return {
-        topic: 'addr', title: '分页地址变换（十进制）',
-        promptHTML: prompt, answerHTML: answer,
-        truth: { page: page, off: off, phys: phys },
-        inputSpec: [
-          { key: 'page', type: 'number', label: '页号' },
-          { key: 'off', type: 'number', label: '页内偏移' },
-          { key: 'phys', type: 'number', label: '物理地址' }
-        ],
-        check: function (v) {
-          return {
-            ok: Number(v.page) === page && Number(v.off) === off && Number(v.phys) === phys,
-            parts: [
-              { name: '页号', ok: Number(v.page) === page, want: page },
-              { name: '页内偏移', ok: Number(v.off) === off, want: off },
-              { name: '物理地址', ok: Number(v.phys) === phys, want: phys }
-            ]
-          };
-        }
-      };
-    }
-
-    // 十六进制版：页大小 1K/2K，地址给 4 位十六进制
-    var pageHex = ri(rng, 1, Math.min(pages - 1, 5));
-    var offHex = ri(rng, 0, pageSize - 1);
-    var logicalHex = pageHex * pageSize + offHex;
-    var blockHex = blocks[pageHex];
-    var physHex = blockHex * pageSize + offHex;
     function hx(n) { return '0x' + n.toString(16).toUpperCase(); }
-    var prompt2 = '<p>页面大小为 <b>' + pageSize + 'B</b>（2<sup>' + Math.log2(pageSize) +
-      '</sup>B），页表为：第 ' + pageHex + ' 页 → 第 ' + blockHex + ' 块（其余页略）。</p>' +
-      '<p>逻辑地址 <b>' + hx(logicalHex) + '</b>（即 ' + logicalHex + '）对应的页号、页内偏移和物理地址分别是多少？' +
-      '物理地址请用十六进制填写。</p>';
-    var answer2 = '<p class="mono">' + hx(logicalHex) + ' = ' + logicalHex + '（十进制），页大小 ' + pageSize + 'B</p>' +
-      '<p class="mono">页号 = ' + logicalHex + ' ÷ ' + pageSize + ' = ' + pageHex + '，页内偏移 = ' + offHex +
-      ' = ' + hx(offHex) + '</p>' +
-      '<p class="mono">块号 ' + blockHex + ' → 物理地址 = ' + blockHex + ' × ' + pageSize + ' + ' + offHex +
-      ' = ' + physHex + ' = <b>' + hx(physHex) + '</b></p>';
+
+    // 第 1 部分：十进制
+    var pageSizeA = pick(rng, [1024, 2048, 4096]);
+    var pagesA = ri(rng, 8, 14);
+    var blocksA = uniqNums(rng, pagesA, 0, 31);
+    var pageA = ri(rng, 0, pagesA - 1);
+    var offA = ri(rng, 0, pageSizeA - 1);
+    var logA = pageA * pageSizeA + offA;
+    var blockA = blocksA[pageA];
+    var physA = blockA * pageSizeA + offA;
+
+    // 第 2 部分：十六进制
+    var pageSizeB = pick(rng, [1024, 2048]);
+    var pagesB = ri(rng, 8, 14);
+    var blocksB = uniqNums(rng, pagesB, 0, 31);
+    var pageB = ri(rng, 1, Math.min(pagesB - 1, 6));
+    var offB = ri(rng, 0, pageSizeB - 1);
+    var logB = pageB * pageSizeB + offB;
+    var blockB = blocksB[pageB];
+    var physB = blockB * pageSizeB + offB;
+
+    var prompt = '<p><b>（1）十进制地址</b>：页面大小为 <b>' + pageSizeA + 'B</b>，某进程的页表如下：</p>' +
+      '<table class="tbl pt"><thead><tr><th>页号</th>' +
+      blocksA.map(function (_, i) { return '<th>' + i + '</th>'; }).join('') +
+      '</tr></thead><tbody><tr><td>物理块号</td>' +
+      blocksA.map(function (b) { return '<td>' + b + '</td>'; }).join('') + '</tr></tbody></table>' +
+      '<p>逻辑地址 <b>' + logA + '</b> 的页号、页内偏移、物理地址各是多少？</p>' +
+      '<p><b>（2）十六进制地址</b>：页面大小为 <b>' + pageSizeB + 'B</b>（2<sup>' +
+      Math.round(Math.log(pageSizeB) / Math.log(2)) + '</sup>B），页表片段：第 ' + pageB + ' 页 → 第 ' +
+      blockB + ' 块。</p>' +
+      '<p>逻辑地址 <b>' + hx(logB) + '</b>（十进制 ' + logB + '）的页号、页内偏移、物理地址（十六进制）各是多少？</p>';
+
+    var answer = '<h4>（1）十进制：' + logA + '</h4>' +
+      '<p class="mono">页号 = ⌊' + logA + ' ÷ ' + pageSizeA + '⌋ = ' + pageA +
+      '；页内偏移 = ' + logA + ' mod ' + pageSizeA + ' = ' + offA + '</p>' +
+      '<p class="mono">查页表：第 ' + pageA + ' 页在第 ' + blockA + ' 块</p>' +
+      '<p class="mono">物理地址 = ' + blockA + ' × ' + pageSizeA + ' + ' + offA + ' = <b>' + physA + '</b></p>' +
+      '<h4>（2）十六进制：' + hx(logB) + '</h4>' +
+      '<p class="mono">' + hx(logB) + ' = ' + logB + '（十进制），页大小 ' + pageSizeB + 'B = ' +
+      hx(pageSizeB) + '</p>' +
+      '<p class="mono">页号 = ' + logB + ' ÷ ' + pageSizeB + ' = ' + pageB + '；页内偏移 = ' + offB +
+      ' = ' + hx(offB) + '</p>' +
+      '<p class="mono">物理地址 = ' + blockB + ' × ' + pageSizeB + ' + ' + offB + ' = ' + physB +
+      ' = <b>' + hx(physB) + '</b></p>';
+
     return {
-      topic: 'addr', title: '分页地址变换（十六进制）',
-      promptHTML: prompt2, answerHTML: answer2,
-      truth: { page: pageHex, off: offHex.toString(16).toUpperCase(), phys: physHex.toString(16).toUpperCase() },
+      topic: 'addr', title: '分页地址变换（十进制 + 十六进制）',
+      promptHTML: prompt, answerHTML: answer,
+      truth: { p1page: pageA, p1off: offA, p1phys: physA,
+               p2page: pageB, p2off: offB.toString(16).toUpperCase(), p2phys: physB.toString(16).toUpperCase() },
       inputSpec: [
-        { key: 'page', type: 'number', label: '页号' },
-        { key: 'off', type: 'text', label: '页内偏移（十六进制，如 4A8）' },
-        { key: 'phys', type: 'text', label: '物理地址（十六进制，如 74A8）' }
+        { key: 'p1page', type: 'number', label: '（1）页号' },
+        { key: 'p1off', type: 'number', label: '（1）页内偏移' },
+        { key: 'p1phys', type: 'number', label: '（1）物理地址' },
+        { key: 'p2page', type: 'number', label: '（2）页号' },
+        { key: 'p2off', type: 'text', label: '（2）页内偏移（十六进制，如 4A8）' },
+        { key: 'p2phys', type: 'text', label: '（2）物理地址（十六进制，如 74A8）' }
       ],
       check: function (v) {
-        var offOk = normHex(v.off) === offHex;
-        var physOk = normHex(v.phys) === physHex;
+        var offOk = normHex(v.p2off) === offB;
+        var physOk = normHex(v.p2phys) === physB;
         return {
-          ok: Number(v.page) === pageHex && offOk && physOk,
+          ok: Number(v.p1page) === pageA && Number(v.p1off) === offA && Number(v.p1phys) === physA &&
+              Number(v.p2page) === pageB && offOk && physOk,
           parts: [
-            { name: '页号', ok: Number(v.page) === pageHex, want: pageHex },
-            { name: '页内偏移', ok: offOk, want: hx(offHex) },
-            { name: '物理地址', ok: physOk, want: hx(physHex) }
+            { name: '（1）页号', ok: Number(v.p1page) === pageA, want: pageA },
+            { name: '（1）页内偏移', ok: Number(v.p1off) === offA, want: offA },
+            { name: '（1）物理地址', ok: Number(v.p1phys) === physA, want: physA },
+            { name: '（2）页号', ok: Number(v.p2page) === pageB, want: pageB },
+            { name: '（2）页内偏移', ok: offOk, want: hx(offB) },
+            { name: '（2）物理地址', ok: physOk, want: hx(physB) }
           ]
         };
       }
