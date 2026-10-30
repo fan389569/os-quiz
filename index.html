@@ -1,0 +1,4184 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>操作系统 · 期末刷题</title>
+<style>:root{
+  --bg:#f5f2ea; --surface:#fffdf8; --surface-2:#faf7f0; --ink:#23201a; --muted:#6f6a5f;
+  --line:#e2dcd0; --line-2:#d3cabb; --accent:#8e3524; --accent-2:#b4573f; --accent-soft:#f4e5df;
+  --ok:#2f6b4f; --ok-soft:#e3efe7; --warn:#8a5a12; --warn-soft:#f7ecd8; --bad:#9c3b2c;
+  --shadow:0 1px 2px rgba(50,40,25,.05), 0 10px 30px -22px rgba(50,40,25,.5);
+}
+html[data-theme="dark"]{
+  --bg:#14130f; --surface:#1c1a15; --surface-2:#211f19; --ink:#ebe5d8; --muted:#a69c8b;
+  --line:#322d24; --line-2:#423b30; --accent:#e08a70; --accent-2:#c9735c; --accent-soft:#38241d;
+  --ok:#7fc09a; --ok-soft:#1e3229; --warn:#e0b878; --warn-soft:#33291a; --bad:#ef9a86;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,sans-serif;
+  font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit}
+a{color:var(--accent)}
+
+.top{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line)}
+.top .inner{max-width:960px;margin:0 auto;padding:10px 16px 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-family:Georgia,"Songti SC","SimSun",serif;font-size:18px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.brand small{font-family:inherit;font-weight:400;font-size:11px;color:var(--muted);margin-left:8px;letter-spacing:.08em}
+.tabs{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none;max-width:100%}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{border:0;background:transparent;color:var(--muted);font-size:14px;padding:7px 12px;
+  border-radius:9px 9px 0 0;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent}
+.tabs button:hover{color:var(--ink);background:var(--surface-2)}
+.tabs button.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+.icon-btn{border:1px solid var(--line-2);background:var(--surface);color:var(--ink);
+  width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;line-height:1}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px 80px}
+.panel{display:none}
+.panel.on{display:block}
+
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line-2);background:var(--surface);color:var(--muted);
+  font-size:13px;padding:5px 12px;border-radius:99px;cursor:pointer;white-space:nowrap}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+html[data-theme="dark"] .chip.on{color:#1b1712}
+.chip .n{opacity:.7;font-size:11px;margin-left:4px}
+
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:9px;overflow:hidden}
+.seg button{border:0;background:var(--surface);color:var(--muted);font-size:13px;padding:6px 12px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+
+.btn{border:1px solid var(--line-2);background:var(--surface);color:var(--ink);
+  font-size:14px;padding:8px 16px;border-radius:10px;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.btn.primary:hover{background:var(--accent-2);color:#fff}
+html[data-theme="dark"] .btn.primary{color:#1b1712}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.small{font-size:12.5px;padding:4px 12px;border-radius:8px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;
+  padding:20px 22px;margin-bottom:16px;box-shadow:var(--shadow)}
+.qhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.qhead h2{margin:0;font-size:18px;font-family:Georgia,"Songti SC",serif}
+.badge{font-size:11.5px;padding:2px 9px;border-radius:99px;background:var(--surface-2);
+  border:1px solid var(--line);color:var(--muted)}
+.badge.chapter{color:var(--accent);background:var(--accent-soft);border-color:transparent}
+
+.prompt{font-size:15px}
+.prompt p{margin:8px 0}
+.prompt .mono{font-family:Consolas,"Cascadia Mono",monospace}
+.seqline{font-family:Consolas,monospace;letter-spacing:.04em;background:var(--surface-2);
+  padding:6px 10px;border-radius:8px;display:inline-block}
+.ops{margin:6px 0 6px 18px;padding:0}
+.ops li{margin:2px 0}
+.quick{margin:6px 0 0 18px;padding:0}
+.quick>li{margin:14px 0}
+.quick>li>p{margin:4px 0 0}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--surface);margin:10px 0}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 8px;text-align:center;white-space:nowrap}
+.tbl th{background:var(--surface-2);font-size:12.5px;font-weight:700}
+.tbl.bank td:first-child{font-weight:700;text-align:left}
+.tbl.pr td{min-width:26px;padding:4px 5px;font-family:Consolas,monospace}
+.tbl.pr .fault{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.tbl.pr .faultrow td{background:var(--surface-2);font-size:11px;color:var(--accent)}
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.tblwrap .tbl{min-width:100%;width:auto;margin:0}
+.prompt pre,.full pre,.ccard pre{overflow-x:auto;max-width:100%;background:var(--surface-2);
+  border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:12px;line-height:1.6;
+  font-family:Consolas,"Cascadia Mono",monospace;margin:8px 0}
+.card,.ccard,.eq,.reveal{min-width:0}
+.stem,.prompt{overflow-wrap:anywhere}
+
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 16px;margin:16px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field>span{font-size:12.5px;color:var(--muted)}
+.field input,.field select{font-size:17px;padding:9px 12px;border:1px solid var(--line-2);
+  border-radius:10px;background:var(--surface-2);color:var(--ink);width:100%;min-width:0}
+.field input:focus,.field select:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.field input[type=number]{font-variant-numeric:tabular-nums}
+.field.wide{grid-column:1/-1}
+.field.wide input{font-size:16px}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+.feedback{display:none;margin-top:14px;border-radius:12px;padding:12px 14px;font-size:14px;border:1px solid var(--line)}
+.feedback.show{display:block}
+.feedback.ok{background:var(--ok-soft);border-color:color-mix(in srgb,var(--ok) 35%,transparent)}
+.feedback.bad{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+.feedback .head{font-size:16px;font-weight:700;margin-bottom:4px}
+.feedback.ok .head{color:var(--ok)}
+.feedback.bad .head{color:var(--accent)}
+.parts{list-style:none;margin:6px 0 0;padding:0;font-size:13.5px}
+.parts li{display:flex;gap:8px;align-items:baseline;padding:2px 0}
+.parts .yes{color:var(--ok)}
+.parts .no{color:var(--accent)}
+.parts .want{color:var(--muted);font-size:12.5px}
+
+.solution{margin-top:16px;border-top:1px dashed var(--line-2);padding-top:12px}
+.solution h3{margin:0 0 6px;font-size:15px}
+.solution h4{margin:14px 0 6px;font-size:14px;color:var(--accent)}
+.solution p{margin:6px 0}
+.solution .mono{font-family:Consolas,"Cascadia Mono",monospace;font-size:13.5px;background:var(--surface-2);
+  padding:6px 10px;border-radius:8px}
+.solution .hint{color:var(--muted);font-size:12.5px}
+.solution .warn{color:var(--warn);background:var(--warn-soft);padding:8px 10px;border-radius:8px;font-size:13px}
+.solution .gantt{display:flex;margin:10px 0 2px;border:1px solid var(--line-2);border-radius:8px;overflow:hidden}
+.solution .gseg{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px 4px;background:var(--surface-2);border-right:1px solid var(--line);font-size:12px;min-width:0}
+.solution .gseg:last-child{border-right:0}
+.solution .gseg:nth-child(even){background:var(--accent-soft)}
+.solution .gseg b{font-size:13px}
+.solution .gseg span{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.solution .gline{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);padding:0 2px}
+
+/* 概念题 */
+.clist{display:flex;flex-direction:column;gap:14px}
+.ccard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.ccard .meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-bottom:8px}
+.ccard .stem{font-size:15px}
+.ccard .stem p{margin:4px 0}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:10px}
+.opt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;font-size:14.5px;
+  background:transparent;border:1px solid transparent;border-radius:9px;padding:7px 10px;cursor:pointer;color:var(--ink)}
+.opt:hover{background:var(--surface-2);border-color:var(--line)}
+.opt .k{flex:0 0 22px;height:22px;border-radius:6px;border:1px solid var(--line);background:var(--surface-2);
+  display:inline-flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:var(--muted);margin-top:2px}
+.opt.correct{background:var(--ok-soft);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+.opt.correct .k{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.opt.wrong .k{background:var(--accent);border-color:var(--accent);color:#fff}
+html[data-theme="dark"] .opt.correct .k,html[data-theme="dark"] .opt.wrong .k{color:#14130f}
+.opt.dim{opacity:.5}
+.opt.chosen{font-weight:700}
+.judgebar{display:flex;gap:10px;margin-top:10px}
+.judgebar .opt{width:auto;min-width:130px;justify-content:center}
+.fillrow{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.fillrow input{flex:1 1 220px;font-size:17px;padding:9px 12px;border:1px solid var(--line-2);
+  border-radius:10px;background:var(--surface-2);color:var(--ink)}
+.fillrow input:focus{outline:2px solid var(--accent);border-color:transparent}
+
+.reveal{margin-top:12px;border-radius:12px;padding:12px 14px;border:1px solid var(--line);background:var(--surface-2)}
+.reveal.ok{background:var(--ok-soft);border-color:color-mix(in srgb,var(--ok) 30%,transparent)}
+.reveal.bad{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
+.reveal .verdict{font-weight:700;font-size:14.5px}
+.reveal.ok .verdict{color:var(--ok)}
+.reveal.bad .verdict{color:var(--accent)}
+.reveal .ans{margin:4px 0;font-size:14px}
+.reveal .ans b{color:var(--accent)}
+.reveal .why{font-size:13px;color:var(--muted);margin:4px 0 0}
+.reveal .why b{color:var(--ink)}
+.reveal .full{margin-top:8px;font-size:13.5px;border-top:1px dashed var(--line-2);padding-top:8px}
+.reveal .full p{margin:4px 0}
+.reveal .full table{margin:6px 0}
+.selfrow{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--muted)}
+.selfrow button{font-size:12.5px;padding:4px 12px;border-radius:99px;border:1px solid var(--line-2);
+  background:var(--surface);color:var(--muted);cursor:pointer}
+.selfrow button:hover{border-color:var(--accent);color:var(--accent)}
+
+/* 模拟卷 */
+.exambar{position:sticky;top:var(--topH,56px);z-index:20;display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line);margin-bottom:14px}
+.exambar .timer{margin-left:auto}
+.timer{font-family:Consolas,monospace;font-size:20px;font-weight:700;color:var(--accent);
+  font-variant-numeric:tabular-nums}
+.timer.low{color:#c0392b;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.45}}
+.examsec h2{font-size:17px;margin:22px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.examsec>.desc{font-size:12.5px;color:var(--muted);margin:-4px 0 12px}
+.eq{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;background:var(--surface)}
+.eq .num{font-size:12px;color:var(--muted);margin-right:6px}
+.eq .stem{font-size:14.5px}
+.score-big{font-size:44px;font-family:Georgia,serif;color:var(--accent);line-height:1.1}
+.score-sub{color:var(--muted);font-size:13px}
+
+/* 统计 */
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.stat .k{font-size:12px;color:var(--muted)}
+.stat .v{font-size:26px;font-family:Georgia,serif;color:var(--accent)}
+.stats-table td:first-child{text-align:left;font-weight:700}
+.stats-table td:last-child{text-align:left;white-space:normal;color:var(--muted);font-size:12.5px}
+.rate{display:flex;align-items:center;gap:9px;justify-content:center}
+.rate .bar{flex:1 1 80px;max-width:110px}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:99px}
+.bar i.low{background:var(--accent)}
+
+.export-area{width:100%;min-height:120px;font-family:Consolas,monospace;font-size:12px;
+  background:var(--surface-2);color:var(--ink);border:1px solid var(--line-2);border-radius:10px;padding:10px}
+.selftest{font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;background:var(--surface-2);
+  border:1px solid var(--line);border-radius:10px;padding:10px;max-height:260px;overflow:auto}
+.selftest .ok{color:var(--ok)}
+.selftest .no{color:var(--accent)}
+
+.empty{color:var(--muted);text-align:center;padding:30px 10px;font-size:14px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:var(--bg);
+  padding:8px 16px;border-radius:99px;font-size:13px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
+@media (max-width:720px){
+  .top .inner{padding:8px 12px 0;gap:8px}
+  .brand{font-size:16px}
+  .brand small{display:none}
+  .tabs{margin-left:0;width:100%;order:3;padding-bottom:0;display:grid;
+    grid-template-columns:repeat(5,1fr);gap:2px}
+  .tabs button{font-size:11.5px;padding:7px 2px;text-align:center;letter-spacing:-.02em}
+  .icon-btn{margin-left:auto}
+  .wrap{padding:14px 12px 70px}
+  .card{padding:15px 14px;border-radius:14px}
+  .qhead h2{font-size:16.5px}
+  .opts{grid-template-columns:1fr}
+  .answers{grid-template-columns:1fr}
+  .field input,.field select{font-size:17px}   /* 防止 iOS 聚焦缩放 */
+  .tbl{font-size:11.5px}
+  .tbl th,.tbl td{padding:4px 4px}
+  .exambar{top:var(--topH,96px)}
+  .timer{font-size:18px}
+  .judgebar .opt{min-width:0;flex:1}
+}
+@media print{
+  .top,.toolbar,.actions,.exambar{display:none!important}
+  body{background:#fff;color:#000}
+  .card{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="inner">
+    <div class="brand">操作系统 · 期末刷题<small>计算题每次随机 · 答案由代码算出</small></div>
+    <nav class="tabs">
+      <button data-act="tab" data-tab="calc" class="on">① 专项计算</button>
+      <button data-act="tab" data-tab="concept">② 概念题</button>
+      <button data-act="tab" data-tab="exam">③ 模拟整卷</button>
+      <button data-act="tab" data-tab="wrong">④ 错题本</button>
+      <button data-act="tab" data-tab="stats">⑤ 统计</button>
+    </nav>
+    <button class="icon-btn" id="themeBtn" title="切换深色 / 浅色">◐</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="panel on" id="tab-calc">
+    <div class="toolbar"><div class="chips" id="topicChips"></div></div>
+    <div class="toolbar">
+      <div class="seg" id="diffSeg">
+        <button data-act="diff" data-diff="easy">简单</button>
+        <button data-act="diff" data-diff="std" class="on">标准</button>
+      </div>
+      <span class="badge">每次随机出新题 · 答案由代码计算</span>
+    </div>
+    <div id="calcBox"></div>
+  </section>
+
+  <section class="panel" id="tab-concept">
+    <div class="chips" id="conceptChips" style="margin-bottom:14px"></div>
+    <div id="conceptList"></div>
+  </section>
+
+  <section class="panel" id="tab-exam"><div id="examBox"></div></section>
+
+  <section class="panel" id="tab-wrong"><div id="wrongBox"></div></section>
+
+  <section class="panel" id="tab-stats"><div id="statsBox"></div></section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>/* ==========================================================================
+   OSQ 计算引擎：纯函数，可在浏览器和 Node 里运行
+   所有题目的答案都由这里的计算得出，解析表格也用同一份结果渲染
+   ========================================================================== */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.OSQ = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  /* ------------------------------ 随机数 ------------------------------ */
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function ri(rng, a, b) { return a + Math.floor(rng() * (b - a + 1)); }
+  function pick(rng, arr) { return arr[Math.floor(rng() * arr.length)]; }
+  function shuffle(rng, arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(rng() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function sum(a) { return a.reduce(function (x, y) { return x + y; }, 0); }
+  function round(x, d) { var k = Math.pow(10, d); return Math.round(x * k) / k; }
+  function vecStr(v) { return v.join(String.fromCharCode(160)); }
+  function uniqNums(rng, n, lo, hi) {
+    var out = [], used = {};
+    while (out.length < n) {
+      var x = ri(rng, lo, hi);
+      if (!used[x]) { used[x] = 1; out.push(x); }
+    }
+    return out;
+  }
+
+  /* ==========================================================================
+     1. 银行家算法
+     ========================================================================== */
+  function safetyCheck(alloc, need, avail) {
+    var n = alloc.length, m = avail.length;
+    var work = avail.slice(), done = [], seq = [], table = [], left = n;
+    for (var i = 0; i < n; i++) done.push(false);
+    while (left > 0) {
+      var found = -1;
+      for (var p = 0; p < n; p++) {
+        if (done[p]) continue;
+        var ok = true;
+        for (var r = 0; r < m; r++) {
+          if (need[p][r] > work[r]) { ok = false; break; }
+        }
+        if (ok) { found = p; break; }
+      }
+      if (found < 0) break;
+      var row = { p: found, work: work.slice(), need: need[found].slice(), alloc: alloc[found].slice() };
+      for (var r2 = 0; r2 < m; r2++) work[r2] += alloc[found][r2];
+      row.after = work.slice();
+      table.push(row);
+      done[found] = true; seq.push(found); left--;
+    }
+    return { safe: left === 0, seq: seq, table: table };
+  }
+
+  function tryGrant(alloc, need, avail, p, req) {
+    var m = avail.length, r;
+    for (r = 0; r < m; r++) {
+      if (req[r] > need[p][r]) return { ok: false, why: 'req>need', step: 'req-need' };
+    }
+    for (r = 0; r < m; r++) {
+      if (req[r] > avail[r]) return { ok: false, why: 'req>avail', step: 'req-avail' };
+    }
+    var a2 = alloc.map(function (row) { return row.slice(); });
+    var n2 = need.map(function (row) { return row.slice(); });
+    var v2 = avail.slice();
+    for (r = 0; r < m; r++) {
+      a2[p][r] += req[r];
+      n2[p][r] -= req[r];
+      v2[r] -= req[r];
+    }
+    var chk = safetyCheck(a2, n2, v2);
+    return { ok: chk.safe, why: chk.safe ? 'safe' : 'unsafe', avail2: v2, alloc2: a2,
+             need2: n2, chk: chk, step: 'trial' };
+  }
+
+  function parseProcSeq(text, n) {
+    if (!text) return null;
+    var nums = String(text).match(/\d+/g);
+    if (!nums) return null;
+    nums = nums.map(Number);
+    if (nums.length !== n) return null;
+    var seen = {};
+    for (var i = 0; i < n; i++) {
+      var v = nums[i];
+      if (v < 0 || v >= n || seen[v]) return null;
+      seen[v] = 1;
+    }
+    return nums;
+  }
+
+  function validSequence(alloc, need, avail, seq) {
+    var work = avail.slice(), m = avail.length, n = alloc.length;
+    if (seq.length !== n) return { ok: false, at: -1 };
+    for (var i = 0; i < n; i++) {
+      var p = seq[i];
+      for (var r = 0; r < m; r++) {
+        if (need[p][r] > work[r]) return { ok: false, at: i, p: p };
+      }
+      for (var r2 = 0; r2 < m; r2++) work[r2] += alloc[p][r2];
+    }
+    return { ok: true };
+  }
+
+  function resNames(m) { return ['A', 'B', 'C', 'D'].slice(0, m); }
+
+  // TLB 有效访问时间（命中：查 TLB + 访存；未命中：查 TLB + 查页表 + 访存）
+  function eatCalc(hitPct, tlbNs, memNs) {
+    return (hitPct / 100) * (tlbNs + memNs) + (1 - hitPct / 100) * (tlbNs + 2 * memNs);
+  }
+
+  function genBanker(rng, diff) {
+    var m = diff === 'easy' ? 3 : 4, n = 5;
+    var wantUnsafe = rng() < 0.4;
+    var wantGrant = !wantUnsafe && rng() < 0.7;   // 不安全状态下任何请求都不可能安全地满足
+    var alloc, need, avail, chk, rp = -1, req = null, grant = null, found = false;
+
+    for (var sysTry = 0; sysTry < 300 && !found; sysTry++) {
+      avail = [];
+      for (var r = 0; r < m; r++) avail.push(ri(rng, 1, diff === 'easy' ? 2 : 3));
+      alloc = []; need = [];
+      for (var p = 0; p < n; p++) {
+        var a = [], nd = [];
+        for (var r2 = 0; r2 < m; r2++) a.push(ri(rng, 0, diff === 'easy' ? 2 : 3));
+        for (var r3 = 0; r3 < m; r3++) nd.push(ri(rng, 0, diff === 'easy' ? 3 : 4));
+        if (nd.every(function (x) { return x === 0; })) nd[ri(rng, 0, m - 1)] = ri(rng, 1, 3);
+        alloc.push(a); need.push(nd);
+      }
+      chk = safetyCheck(alloc, need, avail);
+      if (chk.safe === wantUnsafe) continue;   // 安全性与本次要求不符
+
+      // 在这个系统里找一个满足目标结论的请求
+      for (var k = 0; k < 240 && !found; k++) {
+        var pp = ri(rng, 0, n - 1);
+        if (!need[pp].some(function (v) { return v > 0; })) continue;
+        var rq = need[pp].map(function (v) { return ri(rng, 0, v); });
+        if (rq.every(function (v) { return v === 0; })) {
+          var nz = [];
+          for (var q = 0; q < m; q++) if (need[pp][q] > 0) nz.push(q);
+          rq[nz[ri(rng, 0, nz.length - 1)]] = 1;
+        }
+        if (wantGrant) {
+          for (var r4 = 0; r4 < m; r4++) rq[r4] = Math.min(rq[r4], avail[r4]);
+        } else if (rng() < 0.5) {
+          var over = false, cands = [];
+          for (var r5 = 0; r5 < m; r5++) {
+            if (rq[r5] > avail[r5]) over = true;
+            if (avail[r5] < need[pp][r5]) cands.push(r5);
+          }
+          if (!over && cands.length) {
+            var rc = cands[ri(rng, 0, cands.length - 1)];
+            rq[rc] = avail[rc] + ri(rng, 1, need[pp][rc] - avail[rc]);
+          }
+        }
+        if (rq.every(function (v) { return v === 0; })) continue;
+        var g = tryGrant(alloc, need, avail, pp, rq);
+        if (g.ok === wantGrant) { rp = pp; req = rq; grant = g; found = true; }
+      }
+    }
+    if (!req) {
+      rp = 0;
+      req = need[0].map(function (v, i) { return i === 0 ? 1 : 0; });
+      if (req[0] > need[0][0]) req = need[0].slice();
+      grant = tryGrant(alloc, need, avail, rp, req);
+    }
+
+    var rn = resNames(m);
+    var cn = ['', '一', '二', '三', '四'][m] || m;
+    var head = '<p>现有 5 个进程 P0～P4 共享 ' + rn.join('、') + ' ' + cn + '类资源，' +
+      '当前的 Allocation（已分配）、Need（尚需）与 Available（可用）如下表：</p>';
+    var tbl = '<p class="hint" style="font-size:12.5px;color:var(--muted);margin:2px 0 0">资源顺序：' +
+      rn.join('、') + '（' + cn + '类资源）</p>' +
+      '<table class="tbl bank"><thead><tr><th>进程</th><th>Allocation</th>' +
+      '<th>Need</th><th>Available</th></tr></thead><tbody>';
+    for (var i2 = 0; i2 < n; i2++) {
+      tbl += '<tr><td>P' + i2 + '</td><td>' + vecStr(alloc[i2]) + '</td><td>' + vecStr(need[i2]) + '</td>' +
+        '<td>' + (i2 === 0 ? vecStr(avail) : '') + '</td></tr>';
+    }
+    tbl += '</tbody></table>';
+    var total = avail.map(function (v, r6) {
+      return v + alloc.reduce(function (a, row) { return a + row[r6]; }, 0);
+    });
+    tbl += '<p class="hint" style="font-size:12.5px;color:var(--muted)">系统资源总数 = Allocation 合计 + Available = (' +
+      total.join(' ') + ')</p>';
+    var prompt = head + tbl +
+      '<p>（1）系统当前是否处于安全状态？若安全，请给出一个安全序列。</p>' +
+      '<p>（2）此时进程 P' + rp + ' 提出请求 Request(' + vecStr(req) + ')，系统能否把资源分配给它？为什么？</p>';
+
+    var answer = '';
+    answer += '<h4>（1）安全性检查</h4>';
+    if (chk.safe) {
+      answer += '<p>按 Work ← Work + Allocation 的顺序推进，可得到一个安全序列：<b>P' +
+        chk.seq.join('、P') + '</b>。</p>';
+    } else {
+      answer += '<p>反复寻找 Need ≤ Work 的进程，最后仍有进程无法完成，<b>不存在安全序列</b>，系统处于不安全状态。</p>';
+    }
+    answer += '<table class="tbl bank"><thead><tr><th>进程</th><th>Work</th><th>Need</th><th>Allocation</th>' +
+      '<th>Work+Allocation</th><th>Finish</th></tr></thead><tbody>';
+    chk.table.forEach(function (row) {
+      answer += '<tr><td>P' + row.p + '</td><td>' + vecStr(row.work) + '</td><td>' + vecStr(row.need) +
+        '</td><td>' + vecStr(row.alloc) + '</td><td>' + vecStr(row.after) + '</td><td>TRUE</td></tr>';
+    });
+    if (!chk.safe) {
+      var done = {};
+      chk.seq.forEach(function (x) { done[x] = 1; });
+      var finalWork = chk.table.length ? chk.table[chk.table.length - 1].after : avail.slice();
+      for (var z = 0; z < n; z++) {
+        if (!done[z]) answer += '<tr><td>P' + z + '</td><td>' + vecStr(finalWork) + '</td><td>' + vecStr(need[z]) +
+          '</td><td>' + vecStr(alloc[z]) + '</td><td>—</td><td>FALSE</td></tr>';
+      }
+    }
+    answer += '</tbody></table>';
+
+    answer += '<h4>（2）处理 P' + rp + ' 的请求</h4>';
+    answer += '<p class="mono">Request(' + vecStr(req) + ') ≤ Need(' + vecStr(need[rp]) + ')：' +
+      (req.every(function (v, i3) { return v <= need[rp][i3]; }) ? '成立' : '不成立') + '</p>';
+    answer += '<p class="mono">Request(' + vecStr(req) + ') ≤ Available(' + vecStr(avail) + ')：' +
+      (req.every(function (v, i4) { return v <= avail[i4]; }) ? '成立' : '不成立') + '</p>';
+    if (grant.step === 'req-need' || grant.step === 'req-avail') {
+      answer += '<p>请求不满足上述任一前提，<b>不能分配</b>（进程应继续等待）。</p>';
+    } else {
+      answer += '<p>试分配：Available 减为 (' + vecStr(grant.avail2) + ')，P' + rp + ' 的 Need 变为 (' +
+        vecStr(grant.need2[rp]) + ')。在新状态上再做安全性检查：' +
+        (grant.chk.safe ? '存在安全序列 P' + grant.chk.seq.join('、P') + '，<b>可以分配</b>。'
+                        : '找不到安全序列，系统会进入不安全状态，<b>不能分配</b>。') + '</p>';
+      if (!grant.chk.safe) {
+        answer += '<table class="tbl bank"><thead><tr><th>进程</th><th>Work</th><th>Need</th><th>Allocation</th>' +
+          '<th>Work+Allocation</th><th>Finish</th></tr></thead><tbody>';
+        grant.chk.table.forEach(function (row) {
+          answer += '<tr><td>P' + row.p + '</td><td>' + vecStr(row.work) + '</td><td>' + vecStr(row.need) +
+            '</td><td>' + vecStr(row.alloc) + '</td><td>' + vecStr(row.after) + '</td><td>TRUE</td></tr>';
+        });
+        answer += '</tbody></table>';
+      }
+    }
+
+    return {
+      topic: 'banker', title: '银行家算法',
+      promptHTML: prompt, answerHTML: answer,
+      truth: { safe: chk.safe ? 'safe' : 'unsafe', seq: chk.safe ? 'P' + chk.seq.join(',P') : '',
+               grant: grant.ok ? 'yes' : 'no' },
+      inputSpec: [
+        { key: 'safe', type: 'select', label: '（1）是否安全', options: [['safe', '安全'], ['unsafe', '不安全']] },
+        { key: 'seq', type: 'text', label: '安全序列（不安全可留空）', placeholder: '如 P0,P2,P3,P4,P1' },
+        { key: 'grant', type: 'select', label: '（2）能否分配', options: [['yes', '能分配'], ['no', '不能分配']] }
+      ],
+      check: function (v) {
+        var parts = [];
+        var safeOk = v.safe === (chk.safe ? 'safe' : 'unsafe');
+        parts.push({ name: '（1）安全性判断', ok: safeOk, want: chk.safe ? '安全' : '不安全' });
+        if (chk.safe) {
+          var seq = parseProcSeq(v.seq, n);
+          var r = seq ? validSequence(alloc, need, avail, seq) : { ok: false, at: -1 };
+          parts.push({
+            name: '（1）安全序列', ok: !!r.ok,
+            want: r.ok ? '有效' : (seq ? '第 ' + (r.at + 1) + ' 步不满足 Need ≤ Work' : '需要给出 ' + n + ' 个进程的一个排列')
+          });
+        }
+        var grantOk = v.grant === (grant.ok ? 'yes' : 'no');
+        parts.push({ name: '（2）能否分配', ok: grantOk, want: grant.ok ? '能分配' : '不能分配' });
+        return { ok: parts.every(function (p) { return p.ok; }), parts: parts };
+      }
+    };
+  }
+
+  /* ==========================================================================
+     2. 页面置换
+     ========================================================================== */
+  function simulatePR(seq, nf, algo) {
+    var slots = [], queue = [], recency = [], steps = [], faults = 0;
+    for (var i = 0; i < nf; i++) slots.push(null);
+    for (var t = 0; t < seq.length; t++) {
+      var page = seq[t], hit = slots.indexOf(page) !== -1, victim = null;
+      if (hit) {
+        if (algo === 'LRU') {
+          var k = recency.indexOf(page);
+          if (k >= 0) recency.splice(k, 1);
+          recency.push(page);
+        }
+      } else {
+        faults++;
+        var slot = slots.indexOf(null);
+        if (slot < 0) {
+          if (algo === 'FIFO') {
+            var vp = queue.shift();
+            slot = slots.indexOf(vp);
+            victim = vp;
+          } else if (algo === 'LRU') {
+            var lp = recency.shift();
+            slot = slots.indexOf(lp);
+            victim = lp;
+          } else { // OPT
+            var far = -1, farIdx = -1;
+            for (var s = 0; s < nf; s++) {
+              var pg = slots[s], nxt = Infinity;
+              for (var j = t + 1; j < seq.length; j++) {
+                if (seq[j] === pg) { nxt = j; break; }
+              }
+              if (nxt > far) { far = nxt; farIdx = s; }
+              if (nxt === Infinity) { farIdx = s; break; }
+            }
+            slot = farIdx;
+            victim = slots[slot];
+          }
+          slots[slot] = page;
+          if (algo === 'FIFO') queue.push(page);
+          if (algo === 'LRU') recency.push(page);
+        } else {
+          slots[slot] = page;
+          if (algo === 'FIFO') queue.push(page);
+          if (algo === 'LRU') recency.push(page);
+        }
+      }
+      steps.push({ page: page, slots: slots.slice(), fault: !hit, victim: victim });
+    }
+    return { faults: faults, steps: steps, rate: faults + '/' + seq.length };
+  }
+
+  function prTable(seq, res) {
+    var nf = res.steps[0] ? res.steps[0].slots.length : 3;
+    var h = '<table class="tbl pr"><thead><tr><th>页框＼访问</th>';
+    seq.forEach(function (p) { h += '<th>' + p + '</th>'; });
+    h += '</tr></thead><tbody>';
+    for (var s = 0; s < nf; s++) {
+      h += '<tr><td>页框' + s + '</td>';
+      res.steps.forEach(function (st) {
+        h += '<td class="' + (st.fault ? 'fault' : '') + '">' + (st.slots[s] === null ? '·' : st.slots[s]) + '</td>';
+      });
+      h += '</tr>';
+    }
+    h += '<tr class="faultrow"><td>缺页</td>';
+    res.steps.forEach(function (st) { h += '<td>' + (st.fault ? '√' : '') + '</td>'; });
+    h += '</tr></tbody></table>';
+    return h;
+  }
+
+  function genPaging(rng, diff) {
+    var nf = diff === 'easy' ? 3 : (rng() < 0.5 ? 3 : 4);
+    var len = ri(rng, 12, 16);
+    var pool = shuffle(rng, [0, 1, 2, 3, 4, 5, 6, 7]).slice(0, ri(rng, 4, 6));
+    var seq = [];
+    for (var i = 0; i < len; i++) seq.push(pick(rng, pool));
+    // 避免整个序列过于单调（少于 3 种页号作废）
+    if (new Set(seq).size < 3) seq[0] = (seq[0] + 1) % 8;
+
+    var algos = shuffle(rng, ['FIFO', 'LRU', 'OPT']).slice(0, 2);
+    var res = {};
+    algos.forEach(function (a) { res[a] = simulatePR(seq, nf, a); });
+
+    var prompt = '<p>某进程的页面访问序列为：</p><p class="seqline">' + seq.join('，') + '</p>' +
+      '<p>若系统分配给该进程 <b>' + nf + '</b> 个物理块（初始为空），分别按以下两种算法计算缺页次数：</p>' +
+      '<p>（1）<b>' + algos[0] + '</b>　（2）<b>' + algos[1] + '</b></p>';
+
+    var answer = '';
+    algos.forEach(function (a, idx) {
+      var r = res[a];
+      answer += '<h4>（' + (idx + 1) + '）' + a + '：缺页 ' + r.faults + ' 次，缺页率 ' + r.faults + '/' + seq.length +
+        ' ≈ ' + (r.faults / seq.length * 100).toFixed(1) + '%</h4>';
+      answer += prTable(seq, r);
+      answer += '<p class="hint">表中标底色的是缺页；命中不改变页框内容。' +
+        (a === 'FIFO' ? 'FIFO 按调入先后淘汰最早的页，命中不改变队列顺序。' :
+         a === 'LRU' ? 'LRU 淘汰最久未被访问的页，命中时要把该页移到最新端。' :
+         'OPT 淘汰以后最长时间不再访问（或不再访问）的页。') + '</p>';
+    });
+
+    return {
+      topic: 'paging', title: '页面置换 · ' + algos.join(' / '),
+      promptHTML: prompt, answerHTML: answer,
+      truth: (function () { var t = {}; t.a = res[algos[0]].faults; t.b = res[algos[1]].faults; return t; })(),
+      inputSpec: [
+        { key: 'a', type: 'number', label: '（1）' + algos[0] + ' 缺页次数' },
+        { key: 'b', type: 'number', label: '（2）' + algos[1] + ' 缺页次数' }
+      ],
+      check: function (v) {
+        var x = Number(v.a), y = Number(v.b);
+        var p1 = { name: algos[0] + ' 缺页次数', ok: x === res[algos[0]].faults, want: res[algos[0]].faults + ' 次' };
+        var p2 = { name: algos[1] + ' 缺页次数', ok: y === res[algos[1]].faults, want: res[algos[1]].faults + ' 次' };
+        return { ok: p1.ok && p2.ok, parts: [p1, p2] };
+      }
+    };
+  }
+
+  /* ==========================================================================
+     3. 磁盘调度
+     口径：SCAN 在「该方向上最远的请求」处掉头；C-SCAN 扫到该方向最远请求后，
+     直接跳到另一侧最远的请求，回程距离计入总寻道距离。
+     ========================================================================== */
+  function diskOrder(reqs, start, dir, algo) {
+    var list = reqs.slice().sort(function (a, b) { return a - b; });
+    var up = list.filter(function (x) { return x > start; });
+    var down = list.filter(function (x) { return x < start; }).reverse(); // 由近到远
+    var order = [], tie = false;
+    if (algo === 'SSTF') {
+      var rest = list.slice(), pos = start;
+      while (rest.length) {
+        var bd = Infinity, best = -1, cnt = 0;
+        for (var i = 0; i < rest.length; i++) {
+          var d = Math.abs(rest[i] - pos);
+          if (d < bd) { bd = d; best = i; cnt = 1; }
+          else if (d === bd) cnt++;
+        }
+        if (cnt > 1) tie = true;
+        order.push(rest[best]); pos = rest[best]; rest.splice(best, 1);
+      }
+    } else if (algo === 'SCAN') {
+      if (dir > 0) order = up.concat(down);
+      else order = down.concat(up);
+    } else { // C-SCAN
+      if (dir > 0) {
+        if (up.length) order = up.concat(down.slice().sort(function (a, b) { return a - b; }));
+        else order = down.slice().sort(function (a, b) { return a - b; });
+      } else {
+        if (down.length) order = down.concat(up.slice().sort(function (a, b) { return b - a; }));
+        else order = up.slice().sort(function (a, b) { return b - a; });
+      }
+    }
+    var pos2 = start, dists = [], total = 0;
+    order.forEach(function (x) {
+      var d = Math.abs(x - pos2);
+      dists.push(d); total += d; pos2 = x;
+    });
+    return { order: order, dists: dists, total: total, tie: tie };
+  }
+
+  function genDisk(rng, diff) {
+    var reqs, start, dir, res, sstf, tries = 0;
+    do {
+      reqs = uniqNums(rng, 8, 0, 399);
+      start = ri(rng, 0, 399);
+      while (reqs.indexOf(start) !== -1) start = ri(rng, 0, 399);
+      dir = rng() < 0.5 ? 1 : -1;
+      sstf = diskOrder(reqs, start, dir, 'SSTF');
+      tries++;
+    } while (sstf.tie && tries < 300);
+
+    var algos = shuffle(rng, ['SCAN', 'C-SCAN', 'SSTF']).slice(0, 2);
+    // 固定顺序便于阅读：SSTF 放前面
+    algos.sort(function (a, b) {
+      if (a === 'SSTF') return -1;
+      if (b === 'SSTF') return 1;
+      return 0;
+    });
+    res = {};
+    algos.forEach(function (a) { res[a] = a === 'SSTF' ? sstf : diskOrder(reqs, start, dir, a); });
+
+    var prompt = '<p>磁盘请求队列中的柱面号为：<b>' + reqs.join('、') + '</b>，磁头当前位于 <b>' + start +
+      '</b> 号柱面，运行方向为<b>' + (dir > 0 ? '向大号柱面' : '向小号柱面') + '</b>。</p>' +
+      '<p>分别计算下列算法完成全部请求的总寻道距离：</p><p>（1）<b>' + algos[0] + '</b>　（2）<b>' +
+      algos[1] + '</b></p>';
+
+    var answer = '';
+    algos.forEach(function (a, idx) {
+      var r = res[a];
+      answer += '<h4>（' + (idx + 1) + '）' + a + '：总寻道距离 ' + r.total + '</h4>';
+      answer += '<p class="mono">' + start + ' → ' + r.order.join(' → ') + '</p>';
+      answer += '<p class="mono">' + r.dists.join(' + ') + ' = ' + r.total + '</p>';
+      var note = a === 'SCAN' ? '电梯算法沿当前方向走到该方向上最远的请求后掉头，反向继续服务。'
+        : a === 'C-SCAN' ? '循环扫描沿当前方向扫到最远请求后，直接跳到另一侧最远的请求，回程（跳转）距离也要计入。'
+        : '最短寻道优先每次挑离当前磁头最近的请求，与方向无关。';
+      answer += '<p class="hint">' + note + '</p>';
+    });
+
+    return {
+      topic: 'disk', title: '磁盘调度 · ' + algos.join(' / '),
+      promptHTML: prompt, answerHTML: answer,
+      truth: (function () { var t = {}; t.a = res[algos[0]].total; t.b = res[algos[1]].total; return t; })(),
+      inputSpec: [
+        { key: 'a', type: 'number', label: '（1）' + algos[0] + ' 总寻道距离' },
+        { key: 'b', type: 'number', label: '（2）' + algos[1] + ' 总寻道距离' }
+      ],
+      check: function (v) {
+        var p1 = { name: algos[0], ok: Number(v.a) === res[algos[0]].total, want: res[algos[0]].total };
+        var p2 = { name: algos[1], ok: Number(v.b) === res[algos[1]].total, want: res[algos[1]].total };
+        return { ok: p1.ok && p2.ok, parts: [p1, p2] };
+      }
+    };
+  }
+
+  /* ==========================================================================
+     4. inode / 多级索引
+     ========================================================================== */
+  function inodeCalc(bs, addr, direct, lv) {
+    var P = Math.floor(bs / addr);
+    var max = direct;
+    if (lv[0]) max += P;
+    if (lv[1]) max += P * P;
+    if (lv[2]) max += P * P * P;
+    return { P: P, maxBytes: max * bs, maxBlocks: max };
+  }
+
+  function inodeReads(blockNo, P, direct, lv) {
+    if (blockNo < direct) return 1;
+    var b = blockNo - direct;
+    if (lv[0]) {
+      if (b < P) return 2;
+      b -= P;
+    }
+    if (lv[1]) {
+      if (b < P * P) return 3;
+      b -= P * P;
+    }
+    if (lv[2]) {
+      if (b < P * P * P) return 4;
+    }
+    return -1;
+  }
+
+  function inodeBlocks(size, bs, P, direct, lv) {
+    var data = Math.ceil(size / bs);
+    var idx = 0, rem = data;
+    rem -= Math.min(rem, direct);
+    if (lv[0] && rem > 0) { var u1 = Math.min(rem, P); idx += 1; rem -= u1; }
+    if (lv[1] && rem > 0) {
+      var u2 = Math.min(rem, P * P);
+      idx += 1 + Math.ceil(u2 / P);
+      rem -= u2;
+    }
+    if (lv[2] && rem > 0) {
+      var u3 = Math.min(rem, P * P * P);
+      idx += 1 + Math.ceil(u3 / (P * P)) + Math.ceil(u3 / P);
+      rem -= u3;
+    }
+    return { data: data, index: idx, total: data + idx, rest: rem };
+  }
+
+  function genInode(rng, diff) {
+    var bs = diff === 'easy' ? 512 : pick(rng, [512, 1024]);
+    var addr = pick(rng, [4, 8]);
+    var direct = ri(rng, 5, diff === 'easy' ? 8 : 12);
+    var lv;
+    do {
+      lv = [rng() < 0.75, rng() < 0.5, rng() < 0.3];
+    } while (!lv[0] && !lv[1] && !lv[2]); // 至少有一级间接
+
+    var info = inodeCalc(bs, addr, direct, lv);
+    var P = info.P;
+
+    // 第 2 问：选一个位于「较深层」的偏移
+    var regions = [];
+    if (lv[0]) regions.push({ name: '一级间接', start: direct, cap: P });
+    if (lv[1]) regions.push({ name: '二级间接', start: direct + (lv[0] ? P : 0), cap: P * P });
+    if (lv[2]) regions.push({ name: '三级间接', start: direct + (lv[0] ? P : 0) + (lv[1] ? P * P : 0), cap: P * P * P });
+    var reg = pick(rng, regions);
+    var offBlock = reg.start + ri(rng, 1, Math.min(reg.cap, 400)) - 1;
+    var offset = offBlock * bs + ri(rng, 0, bs - 1);
+    var reads = inodeReads(offBlock, P, direct, lv);
+
+    // 第 3 问：文件大小，保证落在「有索引块」的区域
+    var minBlock = direct + 1;
+    var sizeBlocks = minBlock + ri(rng, 1, Math.min(600, info.maxBlocks - minBlock - 1));
+    var fileSize = sizeBlocks * bs - ri(rng, 0, Math.min(bs - 1, 200));
+    var blk = inodeBlocks(fileSize, bs, P, direct, lv);
+
+    var lvTxt = ['一级间接', '二级间接', '三级间接'];
+    var lvDesc = lv.map(function (b, i) { return b ? lvTxt[i] + ' 1 个' : lvTxt[i] + ' 无'; }).join('，');
+    var prompt = '<p>某文件系统采用 i 结点（索引结点）方式管理文件。每个 i 结点中有 <b>' + direct +
+      '</b> 个直接地址项，' + lvDesc + '。每个磁盘块大小为 <b>' + bs + 'B</b>，每个盘块号占 <b>' + addr +
+      'B</b>。</p><p>（1）该文件系统允许的最大文件是多少字节？</p>' +
+      '<p>（2）某文件的 i 结点已在内存，其余信息都在外存。要访问该文件中偏移量为 <b>' + offset +
+      '</b> 字节的内容，需要访问几次磁盘？</p>' +
+      '<p>（3）若某文件实际大小为 <b>' + fileSize + ' 字节</b>，它实际占用多少个磁盘块（含索引块）？</p>';
+
+    var answer = '<p>每个索引块能存放的盘块号个数：' + bs + ' ÷ ' + addr + ' = <b>' + P + '</b> 个。</p>';
+    answer += '<h4>（1）最大文件</h4><p class="mono">(' + direct +
+      (lv[0] ? ' + ' + P : '') + (lv[1] ? ' + ' + P + '²' : '') + (lv[2] ? ' + ' + P + '³' : '') +
+      ') × ' + bs + 'B = ' + info.maxBlocks + ' × ' + bs + 'B = <b>' + info.maxBytes + ' B</b>' +
+      '（约 ' + (info.maxBytes / 1048576).toFixed(1) + ' MB）</p>';
+    answer += '<h4>（2）偏移 ' + offset + ' 的访问次数</h4>' +
+      '<p class="mono">' + offset + ' ÷ ' + bs + ' = ' + Math.floor(offset / bs) + ' 余 ' + (offset % bs) +
+      '，即逻辑块号 ' + Math.floor(offset / bs) + '</p>' +
+      '<p>前 ' + direct + ' 块为直接地址' + (lv[0] ? '，接着 ' + P + ' 块为一级间接' : '') +
+      (lv[1] ? '，再 ' + (P * P) + ' 块为二级间接' : '') + '。该块落在<b>' + reg.name + '</b>区域，' +
+      '需要读 ' + (reads - 1) + ' 个索引块 + 1 个数据块，共 <b>' + reads + ' 次</b>访问磁盘（i 结点已在内存）。</p>';
+    answer += '<h4>（3）' + fileSize + ' 字节文件的占用</h4>';
+    answer += '<p class="mono">数据块 = ⌈' + fileSize + ' ÷ ' + bs + '⌉ = ' + blk.data + ' 块</p>';
+    answer += '<p>其中直接地址覆盖 ' + Math.min(blk.data, direct) + ' 块；一级间接覆盖 ' +
+      Math.min(Math.max(blk.data - direct, 0), lv[0] ? P : 0) + ' 块；其余走二级/三级间接。</p>';
+    answer += '<p class="mono">索引块合计 ' + blk.index + ' 块，总占用 = ' + blk.data + ' + ' + blk.index +
+      ' = <b>' + blk.total + ' 块</b></p>';
+    if (blk.rest > 0) answer += '<p class="warn">数据块超出该 i 结点可表示的范围，题目数据有误。</p>';
+
+    return {
+      topic: 'inode', title: 'inode 索引结构',
+      promptHTML: prompt, answerHTML: answer,
+      truth: { max: info.maxBytes, reads: reads, blocks: blk.total },
+      inputSpec: [
+        { key: 'max', type: 'number', label: '（1）最大文件大小（字节）' },
+        { key: 'reads', type: 'number', label: '（2）访问磁盘次数' },
+        { key: 'blocks', type: 'number', label: '（3）实际占用块数' }
+      ],
+      check: function (v) {
+        var p1 = { name: '最大文件', ok: Number(v.max) === info.maxBytes, want: info.maxBytes + ' B' };
+        var p2 = { name: '访问次数', ok: Number(v.reads) === reads, want: reads + ' 次' };
+        var p3 = { name: '占用块数', ok: Number(v.blocks) === blk.total, want: blk.total + ' 块' };
+        return { ok: p1.ok && p2.ok && p3.ok, parts: [p1, p2, p3] };
+      }
+    };
+  }
+
+  /* ==========================================================================
+     5. 分页地址变换
+     ========================================================================== */
+  function genAddr(rng, diff) {
+    var hex = rng() < 0.5;
+    var pageSize = hex ? pick(rng, [1024, 2048]) : pick(rng, [1024, 2048, 4096]);
+    var pages = ri(rng, 8, 16);
+    var blocks = uniqNums(rng, pages, 0, 31);
+    if (blocks.length < pages) blocks = [];
+
+    if (!hex) {
+      var page = ri(rng, 0, pages - 1);
+      var off = ri(rng, 0, pageSize - 1);
+      var logical = page * pageSize + off;
+      var block = blocks[page];
+      var phys = block * pageSize + off;
+      var prompt = '<p>某分页系统页面大小为 <b>' + pageSize + 'B</b>，某进程的页表如下：</p>' +
+        '<table class="tbl pt"><thead><tr><th>页号</th>' + blocks.map(function (_, i) { return '<th>' + i + '</th>'; }).join('') +
+        '</tr></thead><tbody><tr><td>物理块号</td>' + blocks.map(function (b) { return '<td>' + b + '</td>'; }).join('') +
+        '</tr></tbody></table><p>逻辑地址 <b>' + logical + '</b> 对应的页号、页内偏移和物理地址分别是多少？</p>';
+      var answer = '<p class="mono">页号 = ⌊' + logical + ' ÷ ' + pageSize + '⌋ = ' + page +
+        '，页内偏移 = ' + logical + ' mod ' + pageSize + ' = ' + off + '</p>' +
+        '<p class="mono">查页表：第 ' + page + ' 页在第 ' + block + ' 块</p>' +
+        '<p class="mono">物理地址 = ' + block + ' × ' + pageSize + ' + ' + off + ' = <b>' + phys + '</b></p>';
+      return {
+        topic: 'addr', title: '分页地址变换（十进制）',
+        promptHTML: prompt, answerHTML: answer,
+        truth: { page: page, off: off, phys: phys },
+        inputSpec: [
+          { key: 'page', type: 'number', label: '页号' },
+          { key: 'off', type: 'number', label: '页内偏移' },
+          { key: 'phys', type: 'number', label: '物理地址' }
+        ],
+        check: function (v) {
+          return {
+            ok: Number(v.page) === page && Number(v.off) === off && Number(v.phys) === phys,
+            parts: [
+              { name: '页号', ok: Number(v.page) === page, want: page },
+              { name: '页内偏移', ok: Number(v.off) === off, want: off },
+              { name: '物理地址', ok: Number(v.phys) === phys, want: phys }
+            ]
+          };
+        }
+      };
+    }
+
+    // 十六进制版：页大小 1K/2K，地址给 4 位十六进制
+    var pageHex = ri(rng, 1, Math.min(pages - 1, 5));
+    var offHex = ri(rng, 0, pageSize - 1);
+    var logicalHex = pageHex * pageSize + offHex;
+    var blockHex = blocks[pageHex];
+    var physHex = blockHex * pageSize + offHex;
+    function hx(n) { return '0x' + n.toString(16).toUpperCase(); }
+    var prompt2 = '<p>页面大小为 <b>' + pageSize + 'B</b>（2<sup>' + Math.log2(pageSize) +
+      '</sup>B），页表为：第 ' + pageHex + ' 页 → 第 ' + blockHex + ' 块（其余页略）。</p>' +
+      '<p>逻辑地址 <b>' + hx(logicalHex) + '</b>（即 ' + logicalHex + '）对应的页号、页内偏移和物理地址分别是多少？' +
+      '物理地址请用十六进制填写。</p>';
+    var answer2 = '<p class="mono">' + hx(logicalHex) + ' = ' + logicalHex + '（十进制），页大小 ' + pageSize + 'B</p>' +
+      '<p class="mono">页号 = ' + logicalHex + ' ÷ ' + pageSize + ' = ' + pageHex + '，页内偏移 = ' + offHex +
+      ' = ' + hx(offHex) + '</p>' +
+      '<p class="mono">块号 ' + blockHex + ' → 物理地址 = ' + blockHex + ' × ' + pageSize + ' + ' + offHex +
+      ' = ' + physHex + ' = <b>' + hx(physHex) + '</b></p>';
+    return {
+      topic: 'addr', title: '分页地址变换（十六进制）',
+      promptHTML: prompt2, answerHTML: answer2,
+      truth: { page: pageHex, off: offHex.toString(16).toUpperCase(), phys: physHex.toString(16).toUpperCase() },
+      inputSpec: [
+        { key: 'page', type: 'number', label: '页号' },
+        { key: 'off', type: 'text', label: '页内偏移（十六进制，如 4A8）' },
+        { key: 'phys', type: 'text', label: '物理地址（十六进制，如 74A8）' }
+      ],
+      check: function (v) {
+        var offOk = normHex(v.off) === offHex;
+        var physOk = normHex(v.phys) === physHex;
+        return {
+          ok: Number(v.page) === pageHex && offOk && physOk,
+          parts: [
+            { name: '页号', ok: Number(v.page) === pageHex, want: pageHex },
+            { name: '页内偏移', ok: offOk, want: hx(offHex) },
+            { name: '物理地址', ok: physOk, want: hx(physHex) }
+          ]
+        };
+      }
+    };
+  }
+
+  function addrDecode(logical, pageSize) {
+    return { page: Math.floor(logical / pageSize), off: logical % pageSize };
+  }
+
+  function normHex(s) {
+    if (s === undefined || s === null) return NaN;
+    var t = String(s).trim().toLowerCase().replace(/^0x/, '').replace(/h$/, '').replace(/\s/g, '');
+    if (!/^[0-9a-f]+$/.test(t)) return NaN;
+    return parseInt(t, 16);
+  }
+
+  /* ==========================================================================
+     6. 进程调度
+     ========================================================================== */
+  function runSchedule(procs, algo, quantum) {
+    var n = procs.length;
+    var remain = procs.map(function (p) { return p.burst; });
+    var done = procs.map(function () { return false; });
+    var gantt = [], t = 0, finished = 0;
+    var last = null;
+
+    function push(p, start, end) {
+      if (end <= start) return;
+      if (gantt.length && gantt[gantt.length - 1].p === p && gantt[gantt.length - 1].end === start) {
+        gantt[gantt.length - 1].end = end;
+      } else {
+        gantt.push({ p: p, start: start, end: end });
+      }
+    }
+
+    if (algo === 'RR') {
+      var sorted = procs.map(function (p, i) { return i; }).sort(function (a, b) {
+        return procs[a].arr - procs[b].arr || a - b;
+      });
+      var qi = 0, queue = [], started = [];
+      // 初始到达的进程入队
+      while (qi < n && procs[sorted[qi]].arr <= t) { queue.push(sorted[qi]); qi++; }
+      while (finished < n) {
+        if (!queue.length) {
+          if (qi < n) { t = procs[sorted[qi]].arr; while (qi < n && procs[sorted[qi]].arr <= t) { queue.push(sorted[qi]); qi++; } }
+          else break;
+          continue;
+        }
+        var p = queue.shift();
+        var run = Math.min(quantum, remain[p]);
+        var start = t;
+        t += run; remain[p] -= run;
+        push(p, start, t);
+        while (qi < n && procs[sorted[qi]].arr <= t) { queue.push(sorted[qi]); qi++; }
+        if (remain[p] === 0) { done[p] = true; finished++; }
+        else queue.push(p);
+      }
+    } else {
+      while (finished < n) {
+        var cand = [];
+        for (var i = 0; i < n; i++) if (!done[i] && procs[i].arr <= t) cand.push(i);
+        if (!cand.length) {
+          var nextArr = Infinity;
+          for (var j = 0; j < n; j++) if (!done[j] && procs[j].arr < nextArr) nextArr = procs[j].arr;
+          t = nextArr; continue;
+        }
+        var sel;
+        if (algo === 'FCFS') {
+          sel = cand.sort(function (a, b) { return procs[a].arr - procs[b].arr || a - b; })[0];
+        } else if (algo === 'SJF') {
+          sel = cand.sort(function (a, b) { return remain[a] - remain[b] || procs[a].arr - procs[b].arr; })[0];
+        } else if (algo === 'SRTF') {
+          sel = cand.sort(function (a, b) { return remain[a] - remain[b] || procs[a].arr - procs[b].arr; })[0];
+        } else { // HRRN
+          sel = cand.sort(function (a, b) {
+            var ra = (t - procs[a].arr + procs[a].burst) / procs[a].burst;
+            var rb = (t - procs[b].arr + procs[b].burst) / procs[b].burst;
+            return rb - ra || procs[a].arr - procs[b].arr;
+          })[0];
+        }
+        var runTo;
+        if (algo === 'SRTF') {
+          // 跑到「下一个到达时刻」或进程结束
+          var nextArr2 = Infinity;
+          for (var k = 0; k < n; k++) {
+            if (!done[k] && procs[k].arr > t && procs[k].arr < nextArr2) nextArr2 = procs[k].arr;
+          }
+          runTo = Math.min(t + remain[sel], nextArr2);
+        } else {
+          runTo = t + remain[sel];
+        }
+        push(sel, t, runTo);
+        remain[sel] -= (runTo - t);
+        t = runTo;
+        if (remain[sel] === 0) { done[sel] = true; finished++; }
+      }
+    }
+
+    var res = procs.map(function (p, i) {
+      var comp = 0;
+      gantt.forEach(function (g) { if (g.p === i) comp = Math.max(comp, g.end); });
+      return {
+        name: p.name, arr: p.arr, burst: p.burst, comp: comp,
+        turn: comp - p.arr, wTurn: (comp - p.arr) / p.burst
+      };
+    });
+    var avgTurn = sum(res.map(function (r) { return r.turn; })) / n;
+    var avgW = sum(res.map(function (r) { return r.wTurn; })) / n;
+    return { gantt: gantt, rows: res, avgTurn: round(avgTurn, 2), avgW: round(avgW, 3) };
+  }
+
+  function ganttHTML(g) {
+    var total = g.length ? g[g.length - 1].end : 0;
+    var h = '<div class="gantt">';
+    g.forEach(function (x) {
+      var w = (x.end - x.start) / total * 100;
+      h += '<div class="gseg" style="flex:' + (x.end - x.start) + '"><b>P' + (x.p + 1) + '</b>' +
+        '<span>' + x.start + '–' + x.end + '</span></div>';
+    });
+    h += '</div><div class="gline"><span>0</span>';
+    g.forEach(function (x) { h += '<span>' + x.end + '</span>'; });
+    h += '</div>';
+    return h;
+  }
+
+  function genSched(rng, diff) {
+    var pool = diff === 'easy' ? ['FCFS', 'SJF'] : ['FCFS', 'SJF', 'SRTF', 'RR', 'HRRN'];
+    var algo = pick(rng, pool);
+    var quantum = ri(rng, 1, 3);
+    var procs = [];
+    var used = {};
+    for (var i = 0; i < 4; i++) {
+      var arr = ri(rng, 0, 6);
+      var burst = ri(rng, 1, 9);
+      procs.push({ name: 'P' + (i + 1), arr: arr, burst: burst });
+    }
+    var res = runSchedule(procs, algo, quantum);
+    var names = { FCFS: '先来先服务（FCFS）', SJF: '非抢占式短作业优先（SJF）', SRTF: '抢占式短作业优先（SRTF）',
+                  RR: '时间片轮转（RR，时间片 ' + quantum + '）', HRRN: '高响应比优先（HRRN）' };
+    var prompt = '<p>系统中有 4 个进程，到达时刻与运行时间如下表（单处理机，忽略切换开销）：</p>' +
+      '<table class="tbl"><thead><tr><th>进程</th><th>到达时刻</th><th>运行时间</th></tr></thead><tbody>' +
+      procs.map(function (p) { return '<tr><td>' + p.name + '</td><td>' + p.arr + '</td><td>' + p.burst + '</td></tr>'; }).join('') +
+      '</tbody></table><p>采用<b>' + names[algo] + '</b>，求调度顺序（甘特图）、各进程周转时间、平均周转时间和平均带权周转时间。</p>';
+
+    var answer = '<h4>甘特图</h4>' + ganttHTML(res.gantt);
+    answer += '<table class="tbl"><thead><tr><th>进程</th><th>到达</th><th>运行</th><th>完成</th><th>周转时间</th><th>带权周转</th></tr></thead><tbody>';
+    res.rows.forEach(function (r) {
+      answer += '<tr><td>' + r.name + '</td><td>' + r.arr + '</td><td>' + r.burst + '</td><td>' + r.comp +
+        '</td><td>' + r.turn + '</td><td>' + r.wTurn.toFixed(2) + '</td></tr>';
+    });
+    answer += '</tbody></table><p class="mono">平均周转时间 = ' +
+      res.rows.map(function (r) { return r.turn; }).join(' + ') + ' ÷ 4 = ' + res.avgTurn +
+      '</p><p class="mono">平均带权周转时间 = ' +
+      res.rows.map(function (r) { return r.wTurn.toFixed(2); }).join(' + ') + ' ÷ 4 = ' + res.avgW + '</p>';
+
+    var needOrder = algo !== 'RR';
+    var spec = [];
+    if (needOrder) spec.push({ key: 'order', type: 'text', label: '调度顺序（如 P1,P2,P4,P1,P3）', placeholder: 'P1,P2,...' });
+    spec.push({ key: 'avg', type: 'number', label: '平均周转时间' });
+    spec.push({ key: 'avgw', type: 'number', label: '平均带权周转时间（保留 2～3 位小数）' });
+
+    return {
+      topic: 'sched', title: '进程调度 · ' + algo,
+      promptHTML: prompt, answerHTML: answer, inputSpec: spec,
+      truth: (function () {
+        var t = { avg: res.avgTurn, avgw: res.avgW };
+        if (needOrder) t.order = 'P' + res.gantt.map(function (g) { return g.p + 1; }).join(',P');
+        return t;
+      })(),
+      check: function (v) {
+        var parts = [];
+        if (needOrder) {
+          var userSeq = String(v.order || '').match(/\d+/g);
+          var wantSeq = res.gantt.map(function (g) { return String(g.p + 1); });
+          var okSeq = !!userSeq && userSeq.length === wantSeq.length && userSeq.every(function (x, i2) { return x === wantSeq[i2]; });
+          parts.push({ name: '调度顺序', ok: okSeq, want: 'P' + wantSeq.join(',P') });
+        }
+        var okAvg = Math.abs(Number(v.avg) - res.avgTurn) < 0.01;
+        parts.push({ name: '平均周转时间', ok: okAvg, want: res.avgTurn });
+        var okW = Math.abs(Number(v.avgw) - res.avgW) < 0.02;
+        parts.push({ name: '平均带权周转时间', ok: okW, want: res.avgW });
+        return { ok: parts.every(function (p) { return p.ok; }), parts: parts };
+      }
+    };
+  }
+
+  /* ==========================================================================
+     7. 首次适应
+     ========================================================================== */
+  function firstFitRun(memSize, ops) {
+    var free = [{ start: 0, end: memSize }];
+    var allocs = [];
+    var timeline = [];
+    ops.forEach(function (op) {
+      if (op.type === 'alloc') {
+        var at = -1;
+        for (var i = 0; i < free.length; i++) {
+          if (free[i].end - free[i].start >= op.size) { at = i; break; }
+        }
+        if (at < 0) { timeline.push({ op: op, ok: false }); return; }
+        var blk = free[at];
+        var start = blk.start;
+        blk.start += op.size;
+        if (blk.start === blk.end) free.splice(at, 1);
+        allocs.push({ name: op.name, start: start, end: start + op.size, size: op.size });
+        timeline.push({ op: op, ok: true, start: start });
+      } else {
+        var idx = -1;
+        for (var j = 0; j < allocs.length; j++) if (allocs[j].name === op.name) { idx = j; break; }
+        if (idx < 0) { timeline.push({ op: op, ok: false }); return; }
+        var a = allocs.splice(idx, 1)[0];
+        free.push({ start: a.start, end: a.end });
+        free.sort(function (x, y) { return x.start - y.start; });
+        var merged = [];
+        free.forEach(function (f) {
+          if (merged.length && merged[merged.length - 1].end === f.start) merged[merged.length - 1].end = f.end;
+          else merged.push({ start: f.start, end: f.end });
+        });
+        free = merged;
+        timeline.push({ op: op, ok: true });
+      }
+    });
+    var used = sum(allocs.map(function (a) { return a.size; }));
+    return { free: free, allocs: allocs, used: used, util: used / memSize * 100, timeline: timeline };
+  }
+
+  function genFirstFit(rng, diff) {
+    var mem = diff === 'easy' ? 512 : pick(rng, [512, 1024]);
+    var ops = [], live = [];
+    var target = ri(rng, 5, 7);
+    var jn = 1;
+    for (var i = 0; i < target; i++) {
+      var canFree = live.length >= 2;
+      var doFree = canFree && rng() < 0.35;
+      if (doFree) {
+        var who = pick(rng, live);
+        ops.push({ type: 'free', name: who });
+        live = live.filter(function (x) { return x !== who; });
+      } else {
+        var size = ri(rng, 20, diff === 'easy' ? 100 : 150);
+        var name = 'J' + jn++;
+        ops.push({ type: 'alloc', name: name, size: size });
+        live.push(name);
+      }
+    }
+    var run = firstFitRun(mem, ops);
+    if (run.used === 0) return genFirstFit(rng, diff);
+
+    var prompt = '<p>系统内存用户区大小为 <b>' + mem + 'KB</b>，初始全部空闲，采用<b>首次适应（FF）</b>算法。' +
+      '按下列顺序申请与释放内存：</p><ol class="ops">' +
+      ops.map(function (o) {
+        return '<li>' + (o.type === 'alloc' ? o.name + ' 申请 ' + o.size + 'KB' : o.name + ' 释放') + '</li>';
+      }).join('') + '</ol>' +
+      '<p>求全部操作完成后的空闲分区（用左闭右开区间表示），以及内存利用率（已分配空间 ÷ 总内存）。</p>';
+
+    var answer = '<h4>分配过程</h4><table class="tbl"><thead><tr><th>操作</th><th>结果</th></tr></thead><tbody>';
+    run.timeline.forEach(function (t) {
+      answer += '<tr><td>' + (t.op.type === 'alloc' ? t.op.name + ' 申请 ' + t.op.size + 'KB' : t.op.name + ' 释放') +
+        '</td><td>' + (t.ok ? (t.op.type === 'alloc' ? '放入 [' + t.start + ',' + (t.start + t.op.size) + ')' : '释放，合并相邻空闲区') : '失败') + '</td></tr>';
+    });
+    answer += '</tbody></table>';
+    answer += '<p>最终已分配：' + (run.allocs.length ? run.allocs.map(function (a) {
+      return a.name + ' [' + a.start + ',' + a.end + ')';
+    }).join('，') : '无') + '</p>';
+    answer += '<p>最终空闲分区：<b>' + run.free.map(function (f) { return '[' + f.start + ',' + f.end + ')'; }).join('、') +
+      '</b></p>';
+    answer += '<p class="mono">内存利用率 = ' + run.used + ' ÷ ' + mem + ' = ' + (run.util).toFixed(1) + '%</p>';
+
+    return {
+      topic: 'firstfit', title: '首次适应算法',
+      promptHTML: prompt, answerHTML: answer,
+      truth: { free: run.free.map(function (f) { return '[' + f.start + ',' + f.end + ')'; }).join(','),
+               util: +run.util.toFixed(1) },
+      inputSpec: [
+        { key: 'free', type: 'text', label: '空闲分区（如 [70,160),[390,512)）' },
+        { key: 'util', type: 'number', label: '内存利用率（%）' }
+      ],
+      check: function (v) {
+        var got = parseIntervals(v.free);
+        var want = run.free.map(function (f) { return [f.start, f.end]; });
+        var okFree = got && got.length === want.length && got.every(function (g, i2) {
+          return g[0] === want[i2][0] && g[1] === want[i2][1];
+        });
+        var okUtil = Math.abs(Number(v.util) - run.util) < 0.6;
+        return {
+          ok: !!okFree && okUtil,
+          parts: [
+            { name: '空闲分区', ok: !!okFree, want: want.map(function (f) { return '[' + f[0] + ',' + f[1] + ')'; }).join('、') },
+            { name: '内存利用率', ok: okUtil, want: run.util.toFixed(1) + '%' }
+          ]
+        };
+      }
+    };
+  }
+
+  function parseIntervals(s) {
+    if (!s) return null;
+    var nums = String(s).match(/\d+(?:\.\d+)?/g);
+    if (!nums || nums.length % 2) return null;
+    var out = [];
+    for (var i = 0; i < nums.length; i += 2) out.push([Number(nums[i]), Number(nums[i + 1])]);
+    return out;
+  }
+
+  /* ==========================================================================
+     8. 速算 5 题
+     ========================================================================== */
+  function genQuick(rng, diff) {
+    var items = [];
+
+    // 1 信号量取值范围
+    var M = ri(rng, 4, 9), N = ri(rng, 2, 4);
+    items.push({
+      title: '信号量取值范围',
+      prompt: '有 M = ' + M + ' 个进程共享同一临界资源，使用信号量机制对 N = ' + N + ' 类临界资源实现互斥访问，' +
+        '则需要设置几个信号量？每个信号量的取值范围是多少（用最小值～最大值表示）？',
+      spec: [
+        { key: 'cnt', type: 'number', label: '信号量个数' },
+        { key: 'min', type: 'number', label: '最小值' },
+        { key: 'max', type: 'number', label: '最大值' }
+      ],
+      truth: { cnt: N, min: 1 - M, max: 1 },
+      check: function (v) {
+        return { ok: Number(v.cnt) === N && Number(v.min) === 1 - M && Number(v.max) === 1,
+                 parts: [{ name: '个数', ok: Number(v.cnt) === N, want: N },
+                         { name: '最小值', ok: Number(v.min) === 1 - M, want: 1 - M },
+                         { name: '最大值', ok: Number(v.max) === 1, want: 1 }] };
+      },
+      sol: '<p>N 类资源各设 1 个互斥信号量，共 ' + N + ' 个。每个信号量初值为 1，' + M +
+        ' 个进程竞争时最多有 ' + (M - 1) + ' 个进程阻塞，值可降到 1 − ' + (M - 1) + ' = ' + (1 - M) +
+        '，故范围 [1−M, 1]。</p>'
+    });
+
+    // 2 死锁资源数
+    var P2 = ri(rng, 3, 8), K = ri(rng, 2, 4);
+    var R = P2 * (K - 1) + 1;
+    items.push({
+      title: '不会死锁的最少资源数',
+      prompt: '系统有 ' + P2 + ' 个进程，每个进程最多需要 ' + K + ' 台同类设备。为保证系统一定不会发生死锁，至少需要多少台设备？',
+      spec: [{ key: 'r', type: 'number', label: '最少设备数' }],
+      truth: { r: R },
+      check: function (v) {
+        return { ok: Number(v.r) === R, parts: [{ name: '设备数', ok: Number(v.r) === R, want: R }] };
+      },
+      sol: '<p>最坏情况每个进程先各拿 ' + (K - 1) + ' 台，都在等最后 1 台。只要再多 1 台，就有一个进程能凑齐并释放，' +
+        '从而打破死锁。因此 R = N(k−1) + 1 = ' + P2 + '×' + (K - 1) + ' + 1 = <b>' + R + '</b> 台。</p>'
+    });
+
+    // 3 时间片轮转
+    var n3 = ri(rng, 6, 12), q3 = pick(rng, [50, 100, 200, 300]), sw = pick(rng, [5, 10, 20]);
+    var resp = n3 * q3;
+    var wait = (n3 - 1) * (q3 + sw);
+    items.push({
+      title: '时间片轮转的响应与等待',
+      prompt: '就绪队列中有 ' + n3 + ' 个进程，时间片为 ' + q3 + 'ms，进程切换开销为 ' + sw +
+        'ms。保证所有进程都能得到一次响应，响应时间最大是多少 ms？一个进程最坏情况下再次获得 CPU 需要等待多久（ms）？',
+      spec: [
+        { key: 'resp', type: 'number', label: '最大响应时间（ms）' },
+        { key: 'wait', type: 'number', label: '最坏等待（ms）' }
+      ],
+      truth: { resp: resp, wait: wait },
+      check: function (v) {
+        return { ok: Number(v.resp) === resp && Number(v.wait) === wait,
+                 parts: [{ name: '响应时间', ok: Number(v.resp) === resp, want: resp },
+                         { name: '最坏等待', ok: Number(v.wait) === wait, want: wait }] };
+      },
+      sol: '<p>响应时间 = 时间片 × 进程数 = ' + q3 + ' × ' + n3 + ' = <b>' + resp + 'ms</b>。</p>' +
+        '<p>一个进程用完时间片后被放到队尾，要等前面 ' + (n3 - 1) + ' 个进程各跑一个时间片，外加 ' + (n3 - 1) +
+        ' 次切换：(n−1)(q + s) = ' + (n3 - 1) + '×(' + q3 + ' + ' + sw + ') = <b>' + wait + 'ms</b>。</p>'
+    });
+
+    // 4 TLB
+    var hit = pick(rng, [60, 70, 80, 90]), tlb = pick(rng, [2, 5, 10]), mem = pick(rng, [50, 80, 100]);
+    var eat = eatCalc(hit, tlb, mem);
+    items.push({
+      title: 'TLB 有效访问时间',
+      prompt: '页表存放在内存中，一次内存访问需要 ' + mem + 'ns，查快表需要 ' + tlb + 'ns。若 ' + hit +
+        '% 的页表访问能在快表中命中，求有效访问时间（ns）。',
+      spec: [{ key: 'eat', type: 'number', label: '有效访问时间（ns）' }],
+      truth: { eat: +eat.toFixed(4) },
+      check: function (v) {
+        return { ok: Math.abs(Number(v.eat) - eat) < 0.01,
+                 parts: [{ name: 'EAT', ok: Math.abs(Number(v.eat) - eat) < 0.01, want: +eat.toFixed(1) }] };
+      },
+      sol: '<p>命中：查 TLB ' + tlb + ' + 访存 ' + mem + ' = ' + (tlb + mem) + 'ns；未命中：' + tlb + ' + ' +
+        mem + '（查页表）+ ' + mem + '（取数）= ' + (tlb + 2 * mem) + 'ns。</p>' +
+        '<p class="mono">EAT = ' + (hit / 100) + '×' + (tlb + mem) + ' + ' + ((100 - hit) / 100) + '×' +
+        (tlb + 2 * mem) + ' = <b>' + (+eat.toFixed(2)) + 'ns</b></p>'
+    });
+
+    // 5 单道批处理平均周转时间
+    var n5 = 4, arr = [0], jobs = [];
+    for (var j = 0; j < n5; j++) jobs.push({ name: 'J' + (j + 1), arr: j === 0 ? 0 : ri(rng, 0, 3), run: ri(rng, 2, 9) });
+    jobs.sort(function (a, b) { return a.arr - b.arr; });
+    var t5 = 0, turns = [];
+    jobs.forEach(function (jb) { t5 = Math.max(t5, jb.arr) + jb.run; turns.push(t5 - jb.arr); });
+    var avg5 = turns.reduce(function (a, b) { return a + b; }, 0) / n5;
+    items.push({
+      title: '单道批处理的平均周转时间',
+      prompt: '单道批处理系统按到达先后顺序执行下列作业（不可抢占，一作业完成才装入下一作业）：' +
+        jobs.map(function (jb) { return jb.name + '（到达 ' + jb.arr + '，运行 ' + jb.run + '）'; }).join('、') +
+        '。求平均周转时间。',
+      spec: [{ key: 'avg', type: 'number', label: '平均周转时间' }],
+      truth: { avg: +avg5.toFixed(4) },
+      check: function (v) {
+        return { ok: Math.abs(Number(v.avg) - avg5) < 0.01,
+                 parts: [{ name: '平均周转', ok: Math.abs(Number(v.avg) - avg5) < 0.01, want: +avg5.toFixed(2) }] };
+      },
+      sol: '<p>完成时刻依次为 ' + turns.map(function (tt, i2) { return jobs[i2].name + ' ' + (tt + jobs[i2].arr); }).join('，') +
+        '，周转时间 = 完成 − 到达 = ' + turns.join('、') + '。</p>' +
+        '<p class="mono">平均周转时间 = (' + turns.join(' + ') + ') ÷ ' + n5 + ' = <b>' + (+avg5.toFixed(2)) + '</b></p>'
+    });
+
+    var html = '<ol class="quick">';
+    items.forEach(function (it, i) {
+      html += '<li><b>' + it.title + '</b><p>' + it.prompt + '</p></li>';
+    });
+    html += '</ol>';
+
+    var answer = '';
+    items.forEach(function (it, i) {
+      answer += '<h4>第 ' + (i + 1) + ' 题 · ' + it.title + '</h4>' + it.sol;
+    });
+
+    var qTruth = {};
+    items.forEach(function (it, i) {
+      Object.keys(it.truth).forEach(function (k) { qTruth['q' + i + '_' + k] = it.truth[k]; });
+    });
+
+    return {
+      topic: 'quick', title: '速算 5 题',
+      promptHTML: html, answerHTML: answer,
+      truth: qTruth,
+      inputSpec: items.map(function (it, i) {
+        return it.spec.map(function (s) {
+          return { key: 'q' + i + '_' + s.key, type: s.type, label: '第 ' + (i + 1) + ' 题 · ' + s.label };
+        });
+      }).reduce(function (a, b) { return a.concat(b); }, []),
+      check: function (v) {
+        var parts = [];
+        items.forEach(function (it, i) {
+          var sub = {};
+          it.spec.forEach(function (s) { sub[s.key] = v['q' + i + '_' + s.key]; });
+          var r = it.check(sub);
+          r.parts.forEach(function (p) { p.name = '第 ' + (i + 1) + ' 题 · ' + p.name; parts.push(p); });
+        });
+        return { ok: parts.every(function (p) { return p.ok; }), parts: parts };
+      }
+    };
+  }
+
+  /* ==========================================================================
+     统一入口
+     ========================================================================== */
+  var TOPICS = [
+    { id: 'banker', name: '银行家算法', chapter: '死锁', gen: genBanker },
+    { id: 'paging', name: '页面置换', chapter: '虚拟存储', gen: genPaging },
+    { id: 'disk', name: '磁盘调度', chapter: '磁盘调度', gen: genDisk },
+    { id: 'inode', name: 'inode 索引', chapter: '文件系统', gen: genInode },
+    { id: 'addr', name: '地址变换', chapter: '内存管理', gen: genAddr },
+    { id: 'sched', name: '进程调度', chapter: '处理机调度', gen: genSched },
+    { id: 'firstfit', name: '首次适应', chapter: '内存管理', gen: genFirstFit },
+    { id: 'quick', name: '速算 5 题', chapter: '综合', gen: genQuick }
+  ];
+
+  function gen(topic, seed, diff) {
+    var t = null;
+    for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].id === topic) t = TOPICS[i];
+    if (!t) throw new Error('unknown topic ' + topic);
+    var rng = mulberry32(seed >>> 0);
+    var q = t.gen(rng, diff || 'std');
+    q.seed = seed;
+    q.diff = diff || 'std';
+    q.chapter = t.chapter;
+    return q;
+  }
+
+
+  /* ==========================================================================
+     自测：固定样例（来自真题原卷与老师更正）
+     ========================================================================== */
+  function runSelfTests() {
+    var pass = 0, fail = 0, lines = [];
+    function ok(name, cond, extra) {
+      if (cond) { pass++; lines.push('PASS  ' + name); }
+      else { fail++; lines.push('FAIL  ' + name + (extra !== undefined ? ('  -> ' + JSON.stringify(extra)) : '')); }
+    }
+    function eq(name, got, want) { ok(name + ' = ' + want, got === want, got); }
+  /* ---------------- 银行家 ---------------- */
+  (function () {
+    // 2024 卷 四.5（原计划写作 25 卷四.5）
+    var alloc = [[0,0,2,3],[1,0,0,0],[1,0,2,1],[0,2,1,2],[0,1,0,0]];
+    var need  = [[0,0,1,2],[2,9,7,0],[2,6,5,6],[0,6,8,2],[0,7,5,6]];
+    var avail = [2,6,4,3];
+    var chk = safetyCheck(alloc, need, avail);
+    ok('银行家 2024 卷：安全', chk.safe === true);
+    ok('银行家 2024 卷：序列有效', validSequence(alloc, need, avail, chk.seq).ok === true, chk.seq);
+    var g = tryGrant(alloc, need, avail, 2, [1,2,2,2]);
+    ok('银行家 2024 卷：P2 请求 (1,2,2,2) 不能分配', g.ok === false, g);
+
+    // 2025 卷 四.2（原计划写作 24 卷四.2）
+    var a2 = [[0,0,1,3],[2,1,0,0],[1,0,0,1],[1,2,1,0],[0,3,0,0]];
+    var n2 = [[0,0,2,2],[1,4,4,0],[2,7,4,6],[0,1,3,5],[1,5,1,6]];
+    var v2 = [0,2,3,3];
+    var c2 = safetyCheck(a2, n2, v2);
+    ok('银行家 2025 卷：安全', c2.safe === true);
+    var g2 = tryGrant(a2, n2, v2, 3, [0,1,0,2]);
+    ok('银行家 2025 卷：P3 请求 (0,1,0,2) 不能分配', g2.ok === false, g2);
+  })();
+
+  /* ---------------- 页面置换 ---------------- */
+  (function () {
+    var s1 = [1,3,2,1,1,3,5,1,3,2,1,5];
+    eq('页面置换 2025 卷 FIFO(3 块)', simulatePR(s1, 3, 'FIFO').faults, 8);
+    eq('页面置换 2025 卷 OPT(3 块)', simulatePR(s1, 3, 'OPT').faults, 5);
+
+    var s2 = [0,1,3,2,5,7,6,4,3,6,0,5,3,2,0,1];
+    eq('页面置换 2024 卷 FIFO(4 块)', simulatePR(s2, 4, 'FIFO').faults, 13);
+    eq('页面置换 2024 卷 LRU(4 块)', simulatePR(s2, 4, 'LRU').faults, 13);
+
+    var s3 = [0,1,3,2,5,4,5,6,7,8,6,3,7,2,0,3];
+    eq('页面置换 2023 卷 OPT(4 块)', simulatePR(s3, 4, 'OPT').faults, 11);
+    eq('页面置换 2023 卷 LRU(4 块)', simulatePR(s3, 4, 'LRU').faults, 12);
+  })();
+
+  /* ---------------- 磁盘调度 ---------------- */
+  (function () {
+    var A = [376,205,134,56,193,396,29,40];
+    eq('磁盘 A：SSTF（起始 100 向小）', diskOrder(A, 100, -1, 'SSTF').total, 648);
+    eq('磁盘 A：SCAN（起始 100 向小）', diskOrder(A, 100, -1, 'SCAN').total, 438);
+    eq('磁盘 A：C-SCAN（起始 100 向小）', diskOrder(A, 100, -1, 'C-SCAN').total, 700);
+
+    var B = [98,183,37,122,14,124,65,67];
+    eq('磁盘 B：SSTF（起始 53 向大）', diskOrder(B, 53, 1, 'SSTF').total, 236);
+    eq('磁盘 B：SCAN（起始 53 向大）', diskOrder(B, 53, 1, 'SCAN').total, 299);
+    eq('磁盘 B：C-SCAN（起始 53 向大）', diskOrder(B, 53, 1, 'C-SCAN').total, 322);
+  })();
+
+  /* ---------------- inode ---------------- */
+  (function () {
+    var info = inodeCalc(512, 4, 10, [true, true, true]);
+    eq('inode：每块地址项 P', info.P, 128);
+    eq('inode：最大文件字节数', info.maxBytes, 1082201088);
+    eq('inode：偏移 80000 的读盘次数', inodeReads(156, 128, 10, [true, true, true]), 3);
+    eq('inode：1MB 文件占用块数', inodeBlocks(1048576, 512, 128, 10, [true, true, true]).total, 2065);
+  })();
+
+  /* ---------------- 地址变换 ---------------- */
+  (function () {
+    var d = addrDecode(2800, 2048);
+    eq('地址：2800 的页号', d.page, 1);
+    eq('地址：2800 的页内偏移', d.off, 752);
+    var h = addrDecode(0x0CA8, 2048);
+    eq('地址：0CA8H 的页号', h.page, 1);
+    eq('地址：0CA8H 的页内偏移(十进制)', h.off, 1192);
+    eq('地址：0CA8H 的页内偏移(十六进制)', h.off.toString(16).toUpperCase(), '4A8');
+    eq('地址：块 14 + 偏移 4A8 的物理地址', (14 * 2048 + h.off).toString(16).toUpperCase(), '74A8');
+  })();
+
+  /* ---------------- 进程调度 ---------------- */
+  (function () {
+    var p = [{ name: 'P1', arr: 0, burst: 8 }, { name: 'P2', arr: 1, burst: 4 },
+             { name: 'P3', arr: 2, burst: 9 }, { name: 'P4', arr: 3, burst: 5 }];
+    var r = runSchedule(p, 'SRTF');
+    eq('调度：抢占式 SJF 的 P1 周转', r.rows[0].turn, 17);
+    eq('调度：抢占式 SJF 的 P2 周转', r.rows[1].turn, 4);
+    eq('调度：抢占式 SJF 的 P3 周转', r.rows[2].turn, 24);
+    eq('调度：抢占式 SJF 的 P4 周转', r.rows[3].turn, 7);
+    eq('调度：抢占式 SJF 平均周转', r.avgTurn, 13);
+
+    var q = [{ name: 'A', arr: 0, burst: 6 }, { name: 'B', arr: 0, burst: 2 },
+             { name: 'C', arr: 0, burst: 10 }, { name: 'D', arr: 0, burst: 4 }];
+    var r2 = runSchedule(q, 'SJF');
+    eq('调度：SJF 平均周转', r2.avgTurn, 10.5);
+    eq('调度：SJF 平均带权周转', r2.avgW, 1.675);
+  })();
+
+  /* ---------------- 首次适应 ---------------- */
+  (function () {
+    var ops = [
+      { type: 'alloc', name: 'J1', size: 100 }, { type: 'alloc', name: 'J2', size: 60 },
+      { type: 'alloc', name: 'J3', size: 150 }, { type: 'free', name: 'J2' },
+      { type: 'alloc', name: 'J4', size: 80 }, { type: 'free', name: 'J1' },
+      { type: 'alloc', name: 'J5', size: 70 }
+    ];
+    var r = firstFitRun(512, ops);
+    eq('首次适应：空闲分区', JSON.stringify(r.free), JSON.stringify([{ start: 70, end: 160 }, { start: 390, end: 512 }]));
+    eq('首次适应：已分配', r.used, 300);
+    eq('首次适应：利用率', r.util.toFixed(2), (300 / 512 * 100).toFixed(2));
+  })();
+
+  /* ---------------- 速算公式 ---------------- */
+  eq('TLB：80% 命中、5ns、50ns 的 EAT', eatCalc(80, 5, 50), 65);
+
+  /* ---------------- 生成器自洽性（每题用引擎自己的答案回填，必须判对） ---------------- */
+  (function () {
+    var topics = TOPICS.map(function (t) { return t.id; });
+    var bad = [];
+    topics.forEach(function (t) {
+      for (var seed = 1; seed <= 120; seed++) {
+        try {
+          var q = gen(t, seed * 7919, seed % 2 ? 'easy' : 'std');
+          var r = q.check(q.truth);
+          if (!r.ok) bad.push(t + '#seed' + seed + ' ' + JSON.stringify(r.parts.filter(function (p) { return !p.ok; })));
+        } catch (e) {
+          bad.push(t + '#seed' + seed + ' 异常 ' + e.message);
+        }
+      }
+    });
+    ok('8 类题 × 120 次生成：答案自洽且可判对', bad.length === 0, bad.slice(0, 6));
+  })();
+
+
+    return { pass: pass, fail: fail, lines: lines };
+  }
+
+  return {
+    gen: gen, TOPICS: TOPICS, runSelfTests: runSelfTests,
+    // 暴露内部函数给自测与模拟卷复用
+    safetyCheck: safetyCheck, tryGrant: tryGrant, validSequence: validSequence, parseProcSeq: parseProcSeq,
+    simulatePR: simulatePR, diskOrder: diskOrder,
+    inodeCalc: inodeCalc, inodeReads: inodeReads, inodeBlocks: inodeBlocks,
+    runSchedule: runSchedule, firstFitRun: firstFitRun, parseIntervals: parseIntervals,
+    eatCalc: eatCalc, addrDecode: addrDecode, normHex: normHex, mulberry32: mulberry32
+  };
+});
+</script>
+<script>/* 概念题库：由 gen_content.py 自动生成，勿手改 */
+window.OsqContent = {
+ "items": [
+  {
+   "id": "2024-s1-1",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "1",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "I/O 与设备",
+   "title": "通道",
+   "stem": "通道又被称为 I/O 处理器，它用于实现（　）之间的信息传输。",
+   "options": [
+    "主存与外设",
+    "CPU 与外设",
+    "外设与外设",
+    "CPU 与辅存"
+   ],
+   "reason": "通道是专门负责 I/O 的处理机，与 CPU 并行工作，直接在主存与外设之间成块传送数据。",
+   "note": "",
+   "answer": "A",
+   "answerText": "A. 主存与外设",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-2",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "2",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "内存管理",
+   "title": "页表始址",
+   "stem": "页式管理中，页表的始地址是存放在（　）。",
+   "options": [
+    "内存中",
+    "存储器页面表中",
+    "联想存储器中",
+    "寄存器中"
+   ],
+   "reason": "页表本身存放在内存，但它的起始地址和长度放在进程 PCB 的页表始址寄存器、页表长度寄存器里，进程被调度时装入 CPU。",
+   "note": "",
+   "answer": "D",
+   "answerText": "D. 寄存器中",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-3",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "3",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "文件系统",
+   "title": "文件重名",
+   "stem": "如果允许不同用户的文件可以具有相同的文件名，通常采用（　）来保证按名存取的安全。",
+   "options": [
+    "重名翻译机构",
+    "建立索引表",
+    "建立指针",
+    "多级目录结构"
+   ],
+   "reason": "同名文件冲突靠多级目录解决：每个用户有自己的目录，路径 = 用户名 + 文件名，不同用户下的同名文件自然可以共存。",
+   "note": "",
+   "answer": "D",
+   "answerText": "D. 多级目录结构",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-4",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "4",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "死锁",
+   "title": "死锁·打印机",
+   "stem": "若系统中有 7 台打印机，有多个进程均需要使用两台，规定每个进程一次仅允许申请一台，则至多允许（　）个进程参与竞争，而不会发生死锁。",
+   "options": [
+    "6",
+    "5",
+    "4",
+    "3"
+   ],
+   "reason": "设参与竞争的进程为 n 个，每个进程最终都要 2 台。",
+   "note": "",
+   "answer": "A",
+   "answerText": "A. 6",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-5",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "5",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "操作系统概述",
+   "title": "管态",
+   "stem": "当 CPU 执行操作系统代码时，称处理机处于（　）。",
+   "options": [
+    "执行态",
+    "目态",
+    "管态",
+    "就绪态"
+   ],
+   "reason": "处理机有两种状态：管态（核心态、系统态）执行 OS 内核代码，可执行特权指令；目态（用户态）执行用户程序。",
+   "note": "",
+   "answer": "C",
+   "answerText": "C. 管态",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-6",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "6",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "I/O 与设备",
+   "title": "缓冲技术",
+   "stem": "CPU 输出数据的速度远远高于打印机的打印速度，为了解决这一矛盾，可采用（　）。",
+   "options": [
+    "并行技术",
+    "缓冲技术",
+    "通道技术",
+    "虚存技术"
+   ],
+   "reason": "CPU 输出快、打印机慢，速度差几个数量级，用缓冲技术：CPU 把数据写进缓冲区就返回，打印机慢慢从缓冲区取，两者解耦。",
+   "note": "",
+   "answer": "B",
+   "answerText": "B. 缓冲技术",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-7",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "7",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "内存管理",
+   "title": "首次适应",
+   "stem": "将主存空闲区按地址顺序从小到大登记在空闲区表中，每次分配时总是顺序查找空闲区表，此种分配算法称为（　）分配算法。",
+   "options": [
+    "首次适应",
+    "最优适应",
+    "最坏适应",
+    "随机适应"
+   ],
+   "reason": "判定只看两点：空闲区表按地址递增登记 + 每次从表头顺序查找第一个够用的 → 首次适应。",
+   "note": "",
+   "answer": "A",
+   "answerText": "A. 首次适应",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-8",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "8",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "I/O 与设备",
+   "title": "I/O 由谁完成",
+   "stem": "用户程序中的输入、输出操作实际上是由（　）完成。",
+   "options": [
+    "程序设计语言",
+    "编译系统",
+    "操作系统",
+    "标准库程序"
+   ],
+   "reason": "用户程序里的 read / write 只是系统调用接口，真正的设备控制、数据传输由操作系统的设备管理模块完成，用户感知不到硬件细节。",
+   "note": "",
+   "answer": "C",
+   "answerText": "C. 操作系统",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-9",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "9",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "文件系统",
+   "title": "流式文件",
+   "stem": "以字符为基本单位按照一定顺序组成的文件叫做（　）。",
+   "options": [
+    "记录式文件",
+    "索引文件",
+    "流式文件",
+    "顺序文件"
+   ],
+   "reason": "按逻辑结构分：流式文件以字符（字节）为基本单位，无记录概念；记录式文件以记录为基本单位。",
+   "note": "",
+   "answer": "C",
+   "answerText": "C. 流式文件",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-10",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "10",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "死锁",
+   "title": "解除死锁",
+   "stem": "采用资源剥夺法可解除死锁，还可以采用（　）方法解除死锁。",
+   "options": [
+    "执行并行操作",
+    "撤销进程",
+    "拒绝分配新的资源",
+    "修改信号量"
+   ],
+   "reason": "解除死锁两条路：剥夺资源（从某些进程手里强行收回）和撤销进程（杀掉代价最小的进程，释放它持有的全部资源）。",
+   "note": "",
+   "answer": "B",
+   "answerText": "B. 撤销进程",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-11",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "11",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "虚拟存储",
+   "title": "缺页中断",
+   "stem": "进程在执行中发生了缺页中断，经操作系统处理后，应让其执行（　）指令。",
+   "options": [
+    "被中断的",
+    "被中断的前一条",
+    "被中断的后一条",
+    "启动时的第一条"
+   ],
+   "reason": "缺页中断发生在指令执行过程中（取指或取操作数时发现页不在内存），这条指令并没有执行完；调入页面后必须重新执行被中断的这条指令。",
+   "note": "",
+   "answer": "A",
+   "answerText": "A. 被中断的",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-12",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "12",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "内存管理",
+   "title": "段最大长度",
+   "stem": "采用段式存储管理的系统中，若地址用 24 位表示，其中 8 位表示段号，则允许每段的最大长度是（　）。",
+   "options": [
+    "2<sup>16</sup>",
+    "2<sup>8</sup>",
+    "2<sup>24</sup>",
+    "2<sup>32</sup>"
+   ],
+   "reason": "24 位地址 = 段号 + 段内偏移。",
+   "note": "原卷选项印作 216、28、224、232，是上标丢失。",
+   "answer": "A",
+   "answerText": "A. 216",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-13",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "13",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "文件系统",
+   "title": "FAT",
+   "stem": "通过 FAT 表可以直接获得的信息是（　）。",
+   "options": [
+    "磁盘块的空闲信息",
+    "块之间的连接信息",
+    "FCB",
+    "磁盘索引节点信息"
+   ],
+   "reason": "FAT 每个表项记录「本块的下一个块号」，顺着表项就能把整个文件的簇链串起来，所以直接得到的是块之间的连接信息。",
+   "note": "",
+   "answer": "B",
+   "answerText": "B. 块之间的连接信息",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-14",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "14",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "进程与线程",
+   "title": "进程特性",
+   "stem": "在下列特性中，哪一个不是进程的特性（　）。",
+   "options": [
+    "异步性",
+    "静态性",
+    "并发性",
+    "动态性"
+   ],
+   "reason": "进程的四个特征：动态性（有生命周期）、并发性、独立性、异步性。",
+   "note": "",
+   "answer": "B",
+   "answerText": "B. 静态性",
+   "accept": []
+  },
+  {
+   "id": "2024-s1-15",
+   "year": "2024",
+   "sec": "单选题",
+   "no": "15",
+   "source": "2024 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "文件系统",
+   "title": "共享文件",
+   "stem": "允许多个用户同时使用一个共享文件时，下列（　）做法是不对的。",
+   "options": [
+    "允许多个用户同时打开共享文件执行读操作",
+    "允许读者和写者同时使用共享文件",
+    "不允许读者和写者同时使用共享文件",
+    "不允许多个写者同时使用共享文件"
+   ],
+   "reason": "共享文件的读写规则只有三句：多读可并发，读写必须互斥，多写必须互斥。",
+   "note": "",
+   "answer": "B",
+   "answerText": "B. 允许读者和写者同时使用共享文件",
+   "accept": []
+  },
+  {
+   "id": "2024-s2-1",
+   "year": "2024",
+   "sec": "判断题",
+   "no": "1",
+   "source": "2024 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "I/O 与设备",
+   "title": "磁盘缓冲",
+   "stem": "在系统内存中设置磁盘缓冲区的主要目的是减少磁盘 I/O 次数。",
+   "options": [],
+   "reason": "磁盘缓冲区把多次小的读改写合并、把顺序访问提前读进来，目的正是减少真正的磁盘 I/O 次数。",
+   "note": "",
+   "answer": "√",
+   "answerText": "√",
+   "accept": []
+  },
+  {
+   "id": "2024-s2-2",
+   "year": "2024",
+   "sec": "判断题",
+   "no": "2",
+   "source": "2024 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "处理机调度",
+   "title": "FCFS 效率",
+   "stem": "先来先服务（FCFS）算法是一种简单的调度算法，但其效率比较高。",
+   "options": [],
+   "reason": "FCFS 只是实现简单、公平，效率并不高：短作业要排在长作业后面干等，平均周转时间偏大。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2024-s2-3",
+   "year": "2024",
+   "sec": "判断题",
+   "no": "3",
+   "source": "2024 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "死锁",
+   "title": "死锁影响",
+   "stem": "一旦出现死锁，所有进程都不能运行。",
+   "options": [],
+   "reason": "死锁只让参与死锁的那部分进程永久阻塞，其他无关进程照常运行。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2024-s2-4",
+   "year": "2024",
+   "sec": "判断题",
+   "no": "4",
+   "source": "2024 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "同步与互斥",
+   "title": "PV 同步初值",
+   "stem": "用 P、V 操作实现进程同步，信号量的初值必须为 1。",
+   "options": [],
+   "reason": "信号量初值取决于语义：互斥信号量初值为 1；同步信号量表示「可用资源数」或「前驱是否完成」，初值可以是 0、1 或任意正整数。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2024-s2-5",
+   "year": "2024",
+   "sec": "判断题",
+   "no": "5",
+   "source": "2024 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "I/O 与设备",
+   "title": "设备独立性",
+   "stem": "使用户编制的程序与实际使用的物理设备无关是由设备独立性功能实现的。",
+   "options": [],
+   "reason": "设备独立性（设备无关性）：用户程序用逻辑设备名编程，由 OS 在运行时映射到具体物理设备，程序与硬件解耦，换设备不用改程序。",
+   "note": "",
+   "answer": "√",
+   "answerText": "√",
+   "accept": []
+  },
+  {
+   "id": "2024-s2-6",
+   "year": "2024",
+   "sec": "判断题",
+   "no": "6",
+   "source": "2024 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "I/O 与设备",
+   "title": "设备分类",
+   "stem": "按信息交换单位分类可将设备分为块设备和字符设备。",
+   "options": [],
+   "reason": "按信息交换单位分两类：块设备（磁盘，成块存取、可寻址）和字符设备（键盘、打印机，按字符流、不可寻址）。",
+   "note": "",
+   "answer": "√",
+   "answerText": "√",
+   "accept": []
+  },
+  {
+   "id": "2024-s2-7",
+   "year": "2024",
+   "sec": "判断题",
+   "no": "7",
+   "source": "2024 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "虚拟存储",
+   "title": "虚存编址空间",
+   "stem": "在虚存系统中，只要磁盘空间无限大，作业就能拥有任意大的编址空间。",
+   "options": [],
+   "reason": "编址空间由地址字长决定（如 32 位机器最多 4GB），与磁盘有多大无关。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2024-s2-8",
+   "year": "2024",
+   "sec": "判断题",
+   "no": "8",
+   "source": "2024 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "进程与线程",
+   "title": "等 CPU 的状态",
+   "stem": "进程申请 CPU 得不到满足时，其状态变为等待态。",
+   "options": [],
+   "reason": "申请 CPU 得不到满足 → 进入就绪态（万事俱备只欠 CPU）。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2024-s2-9",
+   "year": "2024",
+   "sec": "判断题",
+   "no": "9",
+   "source": "2024 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "磁盘调度",
+   "title": "磁盘延迟",
+   "stem": "启动磁盘执行一次输入输出操作时，延迟时间是硬件设计时就固定的。",
+   "options": [],
+   "reason": "旋转延迟取决于磁头现在停在哪、目标扇区什么时候转过来，每次都不一样，不可能由硬件固定。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2024-s2-10",
+   "year": "2024",
+   "sec": "判断题",
+   "no": "10",
+   "source": "2024 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "虚拟存储",
+   "title": "虚拟存储",
+   "stem": "在虚拟存储方式下，程序员编制程序时不必考虑主存的容量，但系统的吞吐量在很大程度上依赖于主存储器的容量。",
+   "options": [],
+   "reason": "虚存让程序员不必考虑主存大小（局部性 + 按需调页），但物理内存不足时缺页率上升、频繁换页，系统吞吐量会明显下降。",
+   "note": "",
+   "answer": "√",
+   "answerText": "√",
+   "accept": []
+  },
+  {
+   "id": "2024-s3-1",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "1",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "short",
+   "chapter": "虚拟存储",
+   "title": "抖动",
+   "stem": "什么是抖动现象？在请求分页系统中，产生抖动的原因是什么？（6 分）",
+   "options": [],
+   "reason": "两个得分点分开写：① 定义——分配给进程的物理块少于它所需的最小块数，刚被换出的页很快又要访问，频繁缺页，CPU 大量时间耗在换页上；② 原因——分给进程的物理块太少（多道程序度过…",
+   "note": "",
+   "answer": "抖动现象：在请求分页存储管理中，如果分配给进程的存储块数量小于进程所需要的最小值，进程将频繁地产生缺页中断，导致系统效率低下，这种现象称为抖动。（3 分） 产生原因：置换算法不合理；系统内的进程数量太多或置换算法不合理也会导致内存抖动。例如，系统在置换旧页面时，可能会频繁地将刚置换出去的页面再次调入，导致系统开销加大。（3 分）",
+   "answerText": "抖动现象：在请求分页存储管理中，如果分配给进程的存储块数量小于进程所需要的最小值，进程将频繁地产生缺页中断，导致系统效率低下，这种现象称为抖动。（3 分） 产生原因：置换算法不合理；系统内的进程数量太多或置换算法不合理也会导致内存抖动。例如，系统在置换旧页面时，可能会频繁地将刚置换出去的页面再次调入，导致系统开销加大。（3 分）",
+   "answerHTML": "<p><b>抖动现象：</b>在请求分页存储管理中，如果分配给进程的存储块数量小于进程所需要的最小值，进程将频繁地产生缺页中断，导致系统效率低下，这种现象称为抖动。（3 分）</p><p><b>产生原因：</b>置换算法不合理；系统内的进程数量太多或置换算法不合理也会导致内存抖动。例如，系统在置换旧页面时，可能会频繁地将刚置换出去的页面再次调入，导致系统开销加大。（3 分）</p>",
+   "accept": []
+  },
+  {
+   "id": "2024-s3-2",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "2",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "short",
+   "chapter": "同步与互斥",
+   "title": "原语",
+   "stem": "什么是原语？（4 分）",
+   "options": [],
+   "reason": "关键词是原子性：原语由若干条指令组成、完成特定功能，执行过程不可被中断。",
+   "note": "",
+   "answer": "原语是指由若干条指令组成的程序段（2 分），用于实现某个特定功能，在执行过程中不可被中断（2 分）。",
+   "answerText": "原语是指由若干条指令组成的程序段（2 分），用于实现某个特定功能，在执行过程中不可被中断（2 分）。",
+   "answerHTML": "<p>原语是指由若干条指令组成的程序段（2 分），用于实现某个特定功能，在执行过程中不可被中断（2 分）。</p>",
+   "accept": []
+  },
+  {
+   "id": "2024-s3-3",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "3",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "死锁",
+   "title": "死锁充分条件",
+   "stem": "死锁的充分条件是当且仅当 <u class='blank'></u> 不可完全简化时。",
+   "options": [],
+   "reason": "这是死锁的图论判定：资源分配图能完全简化 ⇒ 无死锁；不能完全简化 ⇒ 存在死锁。",
+   "note": "",
+   "answer": "资源分配图",
+   "answerText": "资源分配图",
+   "answerHTML": "<p>资源分配图</p>",
+   "accept": [
+    [
+     "资源分配图"
+    ],
+    [
+     "资源分配图不可完全简化"
+    ]
+   ]
+  },
+  {
+   "id": "2024-s3-4",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "4",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "内存管理",
+   "title": "内存共享",
+   "stem": "内存是一种可共享设备，同一时刻最多只允许 <u class='blank'></u> 个进程访问内存。",
+   "options": [],
+   "reason": "按教材口径，内存虽然属于可共享设备，但同一时刻只允许 1 个进程访问（微观上 CPU 与内存之间的数据通路是独占的）。",
+   "note": "",
+   "answer": "一（1 个）",
+   "answerText": "一（1 个）",
+   "answerHTML": "<p>一（1 个）</p>",
+   "accept": [
+    [
+     "一"
+    ],
+    [
+     "1"
+    ],
+    [
+     "一个"
+    ]
+   ]
+  },
+  {
+   "id": "2024-s3-5",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "5",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "进程与线程",
+   "title": "资源分配单位",
+   "stem": "在操作系统中 <u class='blank'></u> 是资源分配调度和管理的最小单位。",
+   "options": [],
+   "reason": "教材原话：进程是资源分配、调度和管理的最小单位（现代教材补充：线程是处理机调度的基本单位）。",
+   "note": "",
+   "answer": "进程",
+   "answerText": "进程",
+   "answerHTML": "<p>进程</p>",
+   "accept": [
+    [
+     "进程"
+    ]
+   ]
+  },
+  {
+   "id": "2024-s3-6",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "6",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "操作系统概述",
+   "title": "OS 功能",
+   "stem": "操作系统是一套配置在计算机硬件上的第一层软件，其基本功能包括 <u class='blank'></u>、存储器管理、设备管理、文件管理和作业管理。",
+   "options": [],
+   "reason": "OS 五大功能：处理机管理、存储器管理、设备管理、文件管理、作业管理。",
+   "note": "原卷题干在「操作系统」前混入了「磁盘高速缓存」五个字（应是下一题串行），已按语义还原。",
+   "answer": "处理机管理",
+   "answerText": "处理机管理",
+   "answerHTML": "<p>处理机管理</p>",
+   "accept": [
+    [
+     "处理机管理"
+    ],
+    [
+     "处理器管理"
+    ],
+    [
+     "cpu管理"
+    ]
+   ]
+  },
+  {
+   "id": "2024-s3-7",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "7",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "I/O 与设备",
+   "title": "磁盘缓冲位置",
+   "stem": "磁盘高速缓冲设在 <u class='blank'></u> 中，其主要目的是提高磁盘 I/O 的速度。",
+   "options": [],
+   "reason": "磁盘高速缓冲（buffer cache）用的是主存里的一块区域，不是磁盘上的缓存，也不是 CPU 的 cache。",
+   "note": "",
+   "answer": "内存",
+   "answerText": "内存",
+   "answerHTML": "<p>内存</p>",
+   "accept": [
+    [
+     "内存"
+    ],
+    [
+     "主存"
+    ]
+   ]
+  },
+  {
+   "id": "2024-s3-8",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "8",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "处理机调度",
+   "title": "时间片计算",
+   "stem": "在一个分时系统中，为使多个进程能够及时与系统交互，最关键的问题是在短时间内使所有就绪进程都能运行。当就绪进程数为 100 时，为保证响应时间不超过 2s，此时的时间片最大应为 <u class='blank'></u> 毫秒。",
+   "options": [],
+   "reason": "响应时间 = 时间片 × 就绪进程数 ≤ 2s → 时间片 ≤ 2000ms ÷ 100 = 20ms。",
+   "note": "",
+   "answer": "20（2000ms ÷ 100 = 20ms）",
+   "answerText": "20（2000ms ÷ 100 = 20ms）",
+   "answerHTML": "<p>20（2000ms ÷ 100 = 20ms）</p>",
+   "accept": [
+    [
+     "20"
+    ],
+    [
+     "20ms"
+    ]
+   ]
+  },
+  {
+   "id": "2024-s3-9",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "9",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "磁盘调度",
+   "title": "寻道时间",
+   "stem": "对于移动臂磁盘，磁头在移动臂的带动下，移动到指定柱面的时间称 <u class='blank'></u> 时间。",
+   "options": [],
+   "reason": "磁盘访问时间 = 寻道时间 + 旋转延迟 + 传输时间。",
+   "note": "",
+   "answer": "寻道",
+   "answerText": "寻道",
+   "answerHTML": "<p>寻道</p>",
+   "accept": [
+    [
+     "寻道"
+    ],
+    [
+     "寻道时间"
+    ]
+   ]
+  },
+  {
+   "id": "2024-s3-10",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "10",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "死锁",
+   "title": "预防死锁",
+   "stem": "资源的预先分配法破坏了产生死锁四个必要条件中的 <u class='blank'></u>。",
+   "options": [],
+   "reason": "资源的预先分配（一次性申请全部资源）破坏了「请求和保持」条件：进程要么一次拿全，要么一个都不拿，就不可能「占着一些再等另一些」。",
+   "note": "",
+   "answer": "请求和保持",
+   "answerText": "请求和保持",
+   "answerHTML": "<p>请求和保持</p>",
+   "accept": [
+    [
+     "请求和保持"
+    ],
+    [
+     "请求与保持"
+    ],
+    [
+     "请求并保持"
+    ],
+    [
+     "占有并等待"
+    ],
+    [
+     "占有且等待"
+    ]
+   ]
+  },
+  {
+   "id": "2024-s3-11",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "11",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "内存管理",
+   "title": "辅存交换",
+   "stem": "辅助存储器只能与 <u class='blank'></u> 相互传递信息。",
+   "options": [],
+   "reason": "辅存（磁盘）不能直接被 CPU 访问，数据必须先调入主存，CPU 再从主存取用，所以辅存只与主存交换信息。",
+   "note": "",
+   "answer": "主存（内存）",
+   "answerText": "主存（内存）",
+   "answerHTML": "<p>主存（内存）</p>",
+   "accept": [
+    [
+     "主存"
+    ],
+    [
+     "内存"
+    ]
+   ]
+  },
+  {
+   "id": "2024-s3-12",
+   "year": "2024",
+   "sec": "填空简答",
+   "no": "12",
+   "source": "2024 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "文件系统",
+   "title": "两级索引",
+   "stem": "文件系统采用两级索引分配方式，若每个磁盘块的大小为 1KB，每个盘块号占 4B，则该系统中单个文件的最大长度是 <u class='blank'></u> MB。",
+   "options": [],
+   "reason": "先算一块能放几个盘块号：1KB ÷ 4B = 256 个。",
+   "note": "",
+   "answer": "64 每块可放 1KB ÷ 4B = 256 个盘块号；两级索引 256×256×1KB = 64MB。",
+   "answerText": "64 每块可放 1KB ÷ 4B = 256 个盘块号；两级索引 256×256×1KB = 64MB。",
+   "answerHTML": "<p>64</p><p class='muted'>每块可放 1KB ÷ 4B = 256 个盘块号；两级索引 256×256×1KB = 64MB。</p>",
+   "accept": [
+    [
+     "64"
+    ],
+    [
+     "64mb"
+    ]
+   ]
+  },
+  {
+   "id": "2025-s1-1",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "1",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "进程与线程",
+   "title": "线程",
+   "stem": "下面关于线程的叙述中，正确的是（　）。",
+   "options": [
+    "不论是系统支持线程还是用户级线程，其切换都需要内核的支持。",
+    "线程是资源的分配单位，进程是调度和分配的单位。",
+    "不管系统中是否有线程，进程都是拥有资源的独立单位。",
+    "在引入线程的系统中，进程仍是资源分配和调度分派的基本单位。"
+   ],
+   "reason": "逐项看： A 错——用户级线程由线程库管理，切换不需要内核介入（这正是它的优点，也是缺点：一个线程阻塞会拖住整个进程）。",
+   "note": "",
+   "answer": "C",
+   "answerText": "C. 不管系统中是否有线程，进程都是拥有资源的独立单位。",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-2",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "2",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "操作系统概述",
+   "title": "操作系统概念",
+   "stem": "下面关于操作系统的叙述，正确的是（　）。",
+   "options": [
+    "批处理作业必须具有作业控制信息。",
+    "分时系统不一定都具有人机交互功能。",
+    "从响应时间的角度看，实时系统与分时系统差不多。",
+    "由于采用了分时技术，用户可以独占计算机的资源。"
+   ],
+   "reason": "A 对：批处理作业必须提交作业说明书（作业控制信息），系统据此自动控制运行，全程无人干预。",
+   "note": "",
+   "answer": "A",
+   "answerText": "A. 批处理作业必须具有作业控制信息。",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-3",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "3",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "I/O 与设备",
+   "title": "I/O 控制方式",
+   "stem": "在下面的 I/O 控制方式中，需要 CPU 干预最少的方式是（　）。",
+   "options": [
+    "程序 I/O 方式",
+    "中断驱动 I/O 控制方式",
+    "直接存储器访问 DMA 控制方式",
+    "I/O 通道控制方式"
+   ],
+   "reason": "按 CPU 介入程度排序：程序 I/O（全程轮询）> 中断驱动（每次传送中断）> DMA（每块传完中断一次）> 通道（整批 I/O 完成才中断一次）。",
+   "note": "",
+   "answer": "D",
+   "answerText": "D. I/O 通道控制方式",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-4",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "4",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "操作系统概述",
+   "title": "目态→管态",
+   "stem": "系统在（　），发生从目态到管态的转换。",
+   "options": [
+    "发出 P 操作时",
+    "发出 V 操作时",
+    "执行置程序状态字时",
+    "执行系统调用时"
+   ],
+   "reason": "目态进入管态只有三个入口：系统调用（访管指令）、中断、异常。",
+   "note": "",
+   "answer": "D",
+   "answerText": "D. 执行系统调用时",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-5",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "5",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "内存管理",
+   "title": "段页式访存",
+   "stem": "存储器的段页式管理中，每次从主存中取出一条指令或一个操作数，需要（　）次访问主存。",
+   "options": [
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "reason": "段页式：先查段表找到该段的页表始址，再查页表找到物理块号，最后才访问数据 → 3 次访存。",
+   "note": "",
+   "answer": "C",
+   "answerText": "C. 3",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-6",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "6",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "同步与互斥",
+   "title": "信号量个数",
+   "stem": "有 M 个进程共享同一临界资源，若使用信号量机制实现对 N 类临界资源的互斥访问，则需设置的信号量个数及变化范围是（　）。",
+   "options": [
+    "1 个信号量，取值范围 [1−M, 1]",
+    "1 个信号量，取值范围 [N−M, N]",
+    "N 个信号量，取值范围 [1−M, 1]",
+    "N 个信号量，取值范围 [N−M, N]"
+   ],
+   "reason": "N 类临界资源，每类各设一个互斥信号量 → 共 N 个。",
+   "note": "原卷答案栏这一格印作「C B」，两种理解都出现了：N 类资源各设一个信号量时取 C（每个信号量范围 [1−M,1]）；若把 N 理解成同类资源的个数，则是 1 个信号量、范围 [N−M,N]，即 B。考试按老师课堂口径为准。",
+   "answer": "C",
+   "answerText": "C. N 个信号量，取值范围 [1−M, 1]",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-7",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "7",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "虚拟存储",
+   "title": "缺页率",
+   "stem": "一个使用全局置换策略的请求分页系统中，假设系统为某个进程分配了固定的物理块数。如果此时系统内运行的进程数增加，那么对于该进程来说，其缺页率通常会（　）。",
+   "options": [
+    "减少",
+    "增加",
+    "可能增加也可能减少",
+    "不变"
+   ],
+   "reason": "全局置换意味着物理块是所有进程共享的池子。",
+   "note": "",
+   "answer": "B",
+   "answerText": "B. 增加",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-8",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "8",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "处理机调度",
+   "title": "多级队列",
+   "stem": "关于多级队列调度算法，下列说法正确的是（　）。",
+   "options": [
+    "通常第一个队列优先级最高",
+    "每个就绪队列的优先权相同",
+    "各就绪队列调度算法不同",
+    "每个队列的时间片大小相同"
+   ],
+   "reason": "多级队列按进程类型划分若干个就绪队列，队列之间是固定优先级，通常第一个队列优先级最高（如系统进程 > 交互 > 批处理），只有高优先级队列空了才调度下一级。",
+   "note": "",
+   "answer": "A",
+   "answerText": "A. 通常第一个队列优先级最高",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-9",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "9",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "同步与互斥",
+   "title": "临界区",
+   "stem": "从下面对临界区的论述中，正确的是（　）。",
+   "options": [
+    "临界区是指进程中用于实现进程互斥的那段代码。",
+    "临界区是指进程中用于实现进程同步的那段代码。",
+    "临界区是指进程中用于实现进程通信的那段代码。",
+    "临界区是指进程中访问临界资源的那段代码。"
+   ],
+   "reason": "临界区 = 进程中访问临界资源的那段代码。",
+   "note": "",
+   "answer": "D",
+   "answerText": "D. 临界区是指进程中访问临界资源的那段代码。",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-10",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "10",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "虚拟存储",
+   "title": "修改位",
+   "stem": "在基于分页的虚拟存储管理系统中，页表项增加了修改位字段，下列程序中，需要使用这个字段的是（　）。",
+   "options": [
+    "分配页框的程序",
+    "选择换出页的程序",
+    "从外存调入页的程序",
+    "访问页的程序"
+   ],
+   "reason": "修改位（脏位）表示该页调入后是否被改写过。",
+   "note": "",
+   "answer": "B",
+   "answerText": "B. 选择换出页的程序",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-11",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "11",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "处理机调度",
+   "title": "避免饥饿",
+   "stem": "下列哪种调度算法可以有效避免「饥饿」现象的发生（　）。",
+   "options": [
+    "非抢占式短作业优先",
+    "先来先服务",
+    "抢占式短作业优先",
+    "基于静态优先级的调度"
+   ],
+   "reason": "饥饿来自「一直有更划算的作业插队」。",
+   "note": "",
+   "answer": "B",
+   "answerText": "B. 先来先服务",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-12",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "12",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "处理机调度",
+   "title": "时间片轮转",
+   "stem": "在时间片轮转调度算法中，若系统的就绪队列中有 10 个进程，时间片大小为 200ms，系统进行进程切换需要 10ms。则一个进程在最坏情况下大概需要等待多长时间才能再次获得 CPU（　）。",
+   "options": [
+    "200ms",
+    "1900ms",
+    "2000ms",
+    "2100ms"
+   ],
+   "reason": "一个进程用完时间片 200ms 后被放回队尾，要等排在它前面的 9 个进程各跑完一个时间片，再加 9 次进程切换：9×200 + 9×10 = 1890ms ≈ 1900ms。",
+   "note": "",
+   "answer": "B",
+   "answerText": "B. 1900ms",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-13",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "13",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "文件系统",
+   "title": "两级目录",
+   "stem": "两级文件目录中，主文件目录的项目内容包括（　）。",
+   "options": [
+    "用户名和指向该用户目录文件的指针",
+    "文件名和指向该用户文件的指针",
+    "用户名和指向该用户文件的指针",
+    "文件名和指向该用户目录文件的指针"
+   ],
+   "reason": "两级目录分工：主文件目录（MFD）每个表项对应一个用户，内容是「用户名 + 指向该用户文件目录（UFD）的指针」；UFD 里才记录该用户的文件名、物理位置等。",
+   "note": "",
+   "answer": "A",
+   "answerText": "A. 用户名和指向该用户目录文件的指针",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-14",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "14",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "I/O 与设备",
+   "title": "DMA",
+   "stem": "关于 DMA 控制方式，下列说法正确的是（　）。",
+   "options": [
+    "采用 DMA 控制方式时，CPU 不用干预整个输入/输出过程。",
+    "采用 DMA 控制方式时，每传输完一个数据块，CPU 要执行中断处理。",
+    "采用 DMA 传输方式，CPU 只在输入/输出开始和结束时干预输入/输出。",
+    "采用 DMA 传输方式只能提高传输速度，不能提高 CPU 与输入/输出设备的并行程度。"
+   ],
+   "reason": "DMA 以数据块为单位传送：开始前 CPU 初始化（设内存地址、字数、方向），传送期间由 DMA 控制器直接搬数据、CPU 不干预，一整块传完才中断一次通知 CPU。",
+   "note": "",
+   "answer": "C",
+   "answerText": "C. 采用 DMA 传输方式，CPU 只在输入/输出开始和结束时干预输入/输出。",
+   "accept": []
+  },
+  {
+   "id": "2025-s1-15",
+   "year": "2025",
+   "sec": "单选题",
+   "no": "15",
+   "source": "2025 卷 · 一、单选题",
+   "type": "mcq",
+   "chapter": "文件系统",
+   "title": "连续组织",
+   "stem": "关于外存文件采用的连续组织方式，下列说法不正确的是（　）。",
+   "options": [
+    "文件访问速度快。",
+    "外存会产生外部碎片。",
+    "需要事先知道文件长度。",
+    "不支持直接存取。"
+   ],
+   "reason": "连续组织把文件放在一片连续盘块上：顺序读极快、支持直接（随机）存取，但必须事先知道文件长度、会产生外部碎片、文件增长困难。",
+   "note": "",
+   "answer": "D",
+   "answerText": "D. 不支持直接存取。",
+   "accept": []
+  },
+  {
+   "id": "2025-s2-1",
+   "year": "2025",
+   "sec": "判断题",
+   "no": "1",
+   "source": "2025 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "进程与线程",
+   "title": "并发执行",
+   "stem": "程序在并发执行时会失去封闭性。",
+   "options": [],
+   "reason": "并发执行的程序共享资源，执行速度受其他程序影响，结果不再只由自身输入决定——这就是失去封闭性和可再现性。",
+   "note": "",
+   "answer": "√",
+   "answerText": "√",
+   "accept": []
+  },
+  {
+   "id": "2025-s2-2",
+   "year": "2025",
+   "sec": "判断题",
+   "no": "2",
+   "source": "2025 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "内存管理",
+   "title": "快表访存",
+   "stem": "具有快表的存储管理系统中，CPU 每次存储数据都只访问一次内存。",
+   "options": [],
+   "reason": "有快表时，命中才只需访问一次内存（直接取数）；未命中仍要查内存页表再访存，共两次。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2025-s2-3",
+   "year": "2025",
+   "sec": "判断题",
+   "no": "3",
+   "source": "2025 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "文件系统",
+   "title": "直接存取",
+   "stem": "在文件的直接存取方法中，允许随意存取文件中的一个记录。",
+   "options": [],
+   "reason": "直接存取（随机存取）允许按记录号直接定位，不必从文件头顺序扫描，磁盘上的文件普遍支持。",
+   "note": "",
+   "answer": "√",
+   "answerText": "√",
+   "accept": []
+  },
+  {
+   "id": "2025-s2-4",
+   "year": "2025",
+   "sec": "判断题",
+   "no": "4",
+   "source": "2025 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "虚拟存储",
+   "title": "请求页式碎片",
+   "stem": "请求页式管理系统中，既可以减少外零头，又可以减少内零头。",
+   "options": [],
+   "reason": "请求页式没有外部碎片（页框大小固定、块块可用），但每个进程最后一页平均半个页的内零头仍然存在。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2025-s2-5",
+   "year": "2025",
+   "sec": "判断题",
+   "no": "5",
+   "source": "2025 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "处理机调度",
+   "title": "进程调度",
+   "stem": "进程调度是最基本的处理机调度，运行频率最高，又称短程调度。",
+   "options": [],
+   "reason": "处理机调度分三级：高级（作业）调度、中级（内存对换）调度、低级（进程）调度。",
+   "note": "",
+   "answer": "√",
+   "answerText": "√",
+   "accept": []
+  },
+  {
+   "id": "2025-s2-6",
+   "year": "2025",
+   "sec": "判断题",
+   "no": "6",
+   "source": "2025 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "内存管理",
+   "title": "动态重定位",
+   "stem": "动态重定位的地址变换是在装入时一次完成的，以后不再改变。",
+   "options": [],
+   "reason": "动态重定位是执行时由重定位寄存器（硬件）把逻辑地址 + 基址变成物理地址，程序在内存里可以移动。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2025-s2-7",
+   "year": "2025",
+   "sec": "判断题",
+   "no": "7",
+   "source": "2025 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "处理机调度",
+   "title": "响应比",
+   "stem": "响应比高者优先调度算法解决了长作业死等的问题。",
+   "options": [],
+   "reason": "响应比 =（等待时间 + 要求服务时间）÷ 要求服务时间。",
+   "note": "",
+   "answer": "√",
+   "answerText": "√",
+   "accept": []
+  },
+  {
+   "id": "2025-s2-8",
+   "year": "2025",
+   "sec": "判断题",
+   "no": "8",
+   "source": "2025 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "文件系统",
+   "title": "文件空间分配",
+   "stem": "文件存储空间的分配通常以字节或字节单位。",
+   "options": [],
+   "reason": "文件存储空间以块（簇）为单位分配，不是字节。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2025-s2-9",
+   "year": "2025",
+   "sec": "判断题",
+   "no": "9",
+   "source": "2025 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "I/O 与设备",
+   "title": "SPOOLing",
+   "stem": "SPOOLing 系统中，输出井和输出缓存都在硬盘中。",
+   "options": [],
+   "reason": "SPOOLing 四大件：输入井、输出井在磁盘；输入缓冲区、输出缓冲区在内存。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2025-s2-10",
+   "year": "2025",
+   "sec": "判断题",
+   "no": "10",
+   "source": "2025 卷 · 二、判断题",
+   "type": "judge",
+   "chapter": "死锁",
+   "title": "预防死锁",
+   "stem": "预防死锁是指在资源动态分配过程中，用某种方法去防止系统进入不安全状态。",
+   "options": [],
+   "reason": "题干描述的是避免死锁（银行家算法，动态判定安全性）。",
+   "note": "",
+   "answer": "×",
+   "answerText": "×",
+   "accept": []
+  },
+  {
+   "id": "2025-s3-1",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "1",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "操作系统概述",
+   "title": "OS 特征",
+   "stem": "并发和 <u class='blank'></u> 是操作系统的两个最基本的特征，两者之间互为存在条件。",
+   "options": [],
+   "reason": "OS 四大特征：并发、共享、虚拟、异步，其中并发和共享是最基本的两个，互为存在条件——没有并发就谈不上共享，没有共享并发也无法进行。",
+   "note": "",
+   "answer": "共享",
+   "answerText": "共享",
+   "answerHTML": "<p>共享</p>",
+   "accept": [
+    [
+     "共享"
+    ]
+   ]
+  },
+  {
+   "id": "2025-s3-2",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "2",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "处理机调度",
+   "title": "调度方式",
+   "stem": "进程的调度方式通常有 <u class='blank'></u> 和 <u class='blank'></u> 两种。",
+   "options": [],
+   "reason": "按可否剥夺分：抢占式（时间片用完、有更高优先级进程到达就剥夺）和非抢占式（进程自己放弃 CPU 才切换）。",
+   "note": "",
+   "answer": "抢占、非抢占",
+   "answerText": "抢占、非抢占",
+   "answerHTML": "<p>抢占、非抢占</p>",
+   "accept": [
+    [
+     "抢占",
+     "非抢占"
+    ],
+    [
+     "非抢占",
+     "抢占"
+    ],
+    [
+     "可抢占",
+     "不可抢占"
+    ],
+    [
+     "不可抢占",
+     "可抢占"
+    ]
+   ]
+  },
+  {
+   "id": "2025-s3-3",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "3",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "处理机调度",
+   "title": "调度算法选择",
+   "stem": "为了使作业的平均周转时间最短，处理机应采用 <u class='blank'></u> 调度算法；为了能实现人机交互作用，处理机应采用 <u class='blank'></u> 调度算法。",
+   "options": [],
+   "reason": "平均周转时间最短靠短作业（短进程）优先；人机交互要求响应快、公平，用时间片轮转。",
+   "note": "",
+   "answer": "短作业/短进程优先；时间片轮转",
+   "answerText": "短作业/短进程优先；时间片轮转",
+   "answerHTML": "<p>短作业/短进程优先；时间片轮转</p>",
+   "accept": [
+    [
+     "短作业优先",
+     "时间片轮转"
+    ],
+    [
+     "短进程优先",
+     "时间片轮转"
+    ],
+    [
+     "sjf",
+     "时间片轮转"
+    ],
+    [
+     "短作业",
+     "时间片轮转"
+    ],
+    [
+     "短作业优先",
+     "轮转"
+    ],
+    [
+     "短进程优先",
+     "轮转"
+    ]
+   ]
+  },
+  {
+   "id": "2025-s3-4",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "4",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "I/O 与设备",
+   "title": "通道分类",
+   "stem": "按信息交换方式不同，通道可分为三类：<u class='blank'></u> 通道、数组选择通道、数组多路通道。",
+   "options": [],
+   "reason": "按信息交换方式，通道分三类：字节多路通道（低速字符设备，分时轮转）、数组选择通道（高速设备，一段时间只服务一台）、数组多路通道（高速设备，分时并行）。",
+   "note": "",
+   "answer": "字符/字节多路",
+   "answerText": "字符/字节多路",
+   "answerHTML": "<p>字符/字节多路</p>",
+   "accept": [
+    [
+     "字节多路"
+    ],
+    [
+     "字节多路通道"
+    ]
+   ]
+  },
+  {
+   "id": "2025-s3-5",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "5",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "处理机调度",
+   "title": "CPU 空闲",
+   "stem": "计算机系统中 CPU 空闲时，<u class='blank'></u> 进程将会被运行。",
+   "options": [],
+   "reason": "CPU 空闲时内核运行调度程序，从就绪队列里选一个进程投入运行。",
+   "note": "",
+   "answer": "调度（程序）",
+   "answerText": "调度（程序）",
+   "answerHTML": "<p>调度（程序）</p>",
+   "accept": [
+    [
+     "调度"
+    ],
+    [
+     "调度程序"
+    ],
+    [
+     "进程调度程序"
+    ]
+   ]
+  },
+  {
+   "id": "2025-s3-6",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "6",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "进程与线程",
+   "title": "打印结束",
+   "stem": "进程所请求的一次打印输出结束后，将使进程状态从 <u class='blank'></u> 状态变为 <u class='blank'></u> 状态。",
+   "options": [],
+   "reason": "打印是 I/O 请求：发出后进程进入等待（阻塞）态；打印完成的中断到来，进程被唤醒转入就绪态，等调度程序分配 CPU。",
+   "note": "",
+   "answer": "等待/阻塞；就绪",
+   "answerText": "等待/阻塞；就绪",
+   "answerHTML": "<p>等待/阻塞；就绪</p>",
+   "accept": [
+    [
+     "等待",
+     "就绪"
+    ],
+    [
+     "阻塞",
+     "就绪"
+    ],
+    [
+     "等待态",
+     "就绪态"
+    ],
+    [
+     "阻塞态",
+     "就绪态"
+    ]
+   ]
+  },
+  {
+   "id": "2025-s3-7",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "7",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "内存管理",
+   "title": "动态重定位",
+   "stem": "动态重定位是在作业 <u class='blank'></u> 过程中进行的。",
+   "options": [],
+   "reason": "动态重定位的地址变换发生在执行过程中（每次访存做一次加法），这正是「动态」两个字的含义。",
+   "note": "",
+   "answer": "执行",
+   "answerText": "执行",
+   "answerHTML": "<p>执行</p>",
+   "accept": [
+    [
+     "执行"
+    ],
+    [
+     "运行"
+    ]
+   ]
+  },
+  {
+   "id": "2025-s3-8",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "8",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "fill",
+   "chapter": "文件系统",
+   "title": "串联文件",
+   "stem": "已知某文件采用串联结构，它由 10 个逻辑记录组成，每个逻辑记录刚好存放于一个磁盘块上，都为 1024 字节，并依次存放在 10、61、32、75、87、98、46、37、33 和 11 号磁盘块上。若要存取文件相对于文件头偏移 7654 字节处的信息，则要访问的磁盘块块号为 <u class='blank'></u>，块内的偏移量是 <u class='blank'></u>。",
+   "options": [],
+   "reason": "先算逻辑块号：7654 ÷ 1024 = 7 余 486 → 第 8 个逻辑块（从 0 计），块内偏移 486。",
+   "note": "",
+   "answer": "37；486 7654 ÷ 1024 = 7 余 486，即第 8 个逻辑块，对应 37 号块。",
+   "answerText": "37；486 7654 ÷ 1024 = 7 余 486，即第 8 个逻辑块，对应 37 号块。",
+   "answerHTML": "<p>37；486</p><p class='muted'>7654 ÷ 1024 = 7 余 486，即第 8 个逻辑块，对应 37 号块。</p>",
+   "accept": [
+    [
+     "37",
+     "486"
+    ]
+   ]
+  },
+  {
+   "id": "2025-s3-9",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "9",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "short",
+   "chapter": "内存管理",
+   "title": "分页地址变换",
+   "stem": "<p>（4 分）在采用分页存储管理系统中，地址结构长度为 18 位，其中 11 至 17 位表示页号，0 至 10 位表示页内位移量。若有一程序依次被放入 2、3、7 号物理块中，相对地址 2800 处有一条指令 <span class='mono'>store 1, 3500</span>。请问：</p><p>(1) 主存容量最大可为多少？每块有多大？</p><p>(2) 上述指令在几号页内？对应的物理地址为多少？</p>",
+   "options": [],
+   "reason": "(1) 地址 18 位 → 主存最大 218 = 256KB；页内位移 11 位 → 页大小 211 = 2KB；页数 27 = 128。",
+   "note": "原卷答案写作 1AE0，按 6896 的十六进制换算应为 1AF0（6896 = 0x1AF0）。",
+   "answer": "（1）主存容量最大为 218 = 256K，可分为 27 = 128 块，每块大小为 211 = 2K。（2 分） （2）相对地址为 2800，2800 ÷ 2048 = 1 余 752，所以指令所在页号为 1 号，块号为 3。物理地址 = 3 × 2048 + 752 = 6896 = 1AF0H。（2 分）",
+   "answerText": "（1）主存容量最大为 218 = 256K，可分为 27 = 128 块，每块大小为 211 = 2K。（2 分） （2）相对地址为 2800，2800 ÷ 2048 = 1 余 752，所以指令所在页号为 1 号，块号为 3。物理地址 = 3 × 2048 + 752 = 6896 = 1AF0H。（2 分）",
+   "answerHTML": "<p>（1）主存容量最大为 2<sup>18</sup> = 256K，可分为 2<sup>7</sup> = 128 块，每块大小为 2<sup>11</sup> = 2K。（2 分）</p><p>（2）相对地址为 2800，2800 ÷ 2048 = 1 余 752，所以指令所在页号为 1 号，块号为 3。物理地址 = 3 × 2048 + 752 = 6896 = <b>1AF0H</b>。（2 分）</p>",
+   "accept": []
+  },
+  {
+   "id": "2025-s3-10",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "10",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "short",
+   "chapter": "同步与互斥",
+   "title": "过桥 PV 填空",
+   "stem": "<p>一条河上架设了一座桥，过河的人只能沿着桥向前走而不能向后退。过河时，只要对岸无人过，就可以过，但不允许河两岸的两个人同时过。请填写下列程序段的画线部分，用 P、V 操作控制河两岸的人顺利过河。</p><pre class='code'>Semaphore S=1, Scount1=1;   // 桥的互斥信号量，过河人计数器互斥信号量\nint count1=0, count2=0;      // 过河人计数器\n\nvoid direct1( )\n{\n    wait(Scount1);\n    if(count1 == 0)  wait(S);\n    count1++;\n    signal(Scount1);\n    过桥；\n    wait(Scount1);\n    count1--;\n    if(count1 == 0)  signal(S);\n    signal(Scount1);\n}\nvoid direct2( )\n{\n    ......\n}\nmain()\n{\n    ......\n    direct1();\n    direct2();\n    ......\n}</pre>",
+   "options": [],
+   "reason": "思路是「读者-写者」的变体：每个方向各有一个计数器，count 从 0 变 1 时申请桥（P(S)），从 1 变 0 时释放桥（V(S)），计数的修改用各自的互斥信号量保护。",
+   "note": "",
+   "answer": "原卷未附答案，下面为按题意补全的参考写法（direct2 与 direct1 对称）。 Semaphore Scount2 = 1; // 需补上方向 2 的计数器互斥信号量 void direct2( ) { wait(Scount2); if(count2 == 0) wait(S); count2++; signal(Scount2); 过桥； wait(Scount2); count2--; if(count2 == 0) signal(S); signal(Scount2); } main() { direct1(); direct2(); }",
+   "answerText": "原卷未附答案，下面为按题意补全的参考写法（direct2 与 direct1 对称）。 Semaphore Scount2 = 1; // 需补上方向 2 的计数器互斥信号量 void direct2( ) { wait(Scount2); if(count2 == 0) wait(S); count2++; signal(Scount2); 过桥； wait(Scount2); count2--; if(count2 == 0) signal(S); signal(Scount2); } main() { direct1(); direct2(); }",
+   "answerHTML": "<p class='muted'>原卷未附答案，下面为按题意补全的参考写法（direct2 与 direct1 对称）。</p><pre class='code'>Semaphore Scount2 = 1;       // 需补上方向 2 的计数器互斥信号量\n\nvoid direct2( )\n{\n    wait(Scount2);\n    if(count2 == 0)  wait(S);\n    count2++;\n    signal(Scount2);\n    过桥；\n    wait(Scount2);\n    count2--;\n    if(count2 == 0)  signal(S);\n    signal(Scount2);\n}\nmain()\n{\n    direct1();\n    direct2();\n}</pre>",
+   "accept": []
+  },
+  {
+   "id": "2025-s3-11",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "11",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "short",
+   "chapter": "处理机调度",
+   "title": "SJF 计算",
+   "stem": "<p>（4 分）有四个作业同时到达系统，它们的估计运行时间如下：</p><p>作业 A：6ms，作业 B：2ms，作业 C：10ms，作业 D：4ms。</p><p>采用短作业优先（SJF）调度算法，请问这批作业的平均周转时间和平均带权周转时间分别是什么？</p>",
+   "options": [],
+   "reason": "四个作业同时到达 → 没有到达时间差，SJF 就是按执行时间从短到长排：B(2) → D(4) → A(6) → C(10)，完成时刻 2、6、12、22。",
+   "note": "",
+   "answer": "SJF 调度顺序：B(2ms) → D(4ms) → A(6ms) → C(10ms) 完成时间：B 2ms，D 6ms，A 12ms，C 22ms 周转时间：B 2ms，D 6ms，A 12ms，C 22ms；平均周转时间 = (2+6+12+22)/4 = 10.5ms 带权周转：1，1.5，2，2.2；平均带权周转时间 = 6.7/4 = 1.675",
+   "answerText": "SJF 调度顺序：B(2ms) → D(4ms) → A(6ms) → C(10ms) 完成时间：B 2ms，D 6ms，A 12ms，C 22ms 周转时间：B 2ms，D 6ms，A 12ms，C 22ms；平均周转时间 = (2+6+12+22)/4 = 10.5ms 带权周转：1，1.5，2，2.2；平均带权周转时间 = 6.7/4 = 1.675",
+   "answerHTML": "<p>SJF 调度顺序：B(2ms) → D(4ms) → A(6ms) → C(10ms)</p><p>完成时间：B 2ms，D 6ms，A 12ms，C 22ms</p><p>周转时间：B 2ms，D 6ms，A 12ms，C 22ms；平均周转时间 = (2+6+12+22)/4 = <b>10.5ms</b></p><p>带权周转：1，1.5，2，2.2；平均带权周转时间 = 6.7/4 = <b>1.675</b></p>",
+   "accept": []
+  },
+  {
+   "id": "2025-s3-12",
+   "year": "2025",
+   "sec": "填空简答",
+   "no": "12",
+   "source": "2025 卷 · 三、填空简答",
+   "type": "short",
+   "chapter": "磁盘调度",
+   "title": "磁盘调度",
+   "stem": "<p>（6 分）设磁盘的 I/O 请求队列中的柱面号为 190、102、161、77、90、128、30、140、25，磁头的起始位置为 95（磁头的运行方向向外）。请问，使用下列磁盘调度算法，这批访问任务的总寻道距离分别是多少？写出求解过程。</p><p>（1）最短寻道距离优先算法　（2）电梯调度算法</p>",
+   "options": [],
+   "reason": "SSTF 不看方向，每次取最近：95→90(5)→102(12)→77(25)→30(47)→25(5)→128(103)→140(12)→161(21)→190(29) = 25…",
+   "note": "",
+   "answer": "（1）SSTF（3 分） 95 → 90 → 102 → 77 → 30 → 25 → 128 → 140 → 161 → 190 5 + 12 + 25 + 47 + 5 + 103 + 12 + 21 + 29 = 259 （2）电梯调度（3 分） 95 → 90 → 77 → 30 → 25 → 102 → 128 → 140 → 161 → 190 5 + 13 + 47 + 5 + 77 + 26 + 12 + 21 + 29 = 235",
+   "answerText": "（1）SSTF（3 分） 95 → 90 → 102 → 77 → 30 → 25 → 128 → 140 → 161 → 190 5 + 12 + 25 + 47 + 5 + 103 + 12 + 21 + 29 = 259 （2）电梯调度（3 分） 95 → 90 → 77 → 30 → 25 → 102 → 128 → 140 → 161 → 190 5 + 13 + 47 + 5 + 77 + 26 + 12 + 21 + 29 = 235",
+   "answerHTML": "<p><b>（1）SSTF（3 分）</b></p><p class='mono'>95 → 90 → 102 → 77 → 30 → 25 → 128 → 140 → 161 → 190</p><p class='mono'>5 + 12 + 25 + 47 + 5 + 103 + 12 + 21 + 29 = 259</p><p><b>（2）电梯调度（3 分）</b></p><p class='mono'>95 → 90 → 77 → 30 → 25 → 102 → 128 → 140 → 161 → 190</p><p class='mono'>5 + 13 + 47 + 5 + 77 + 26 + 12 + 21 + 29 = 235</p>",
+   "accept": []
+  }
+ ],
+ "chapters": [
+  "操作系统概述",
+  "进程与线程",
+  "处理机调度",
+  "同步与互斥",
+  "死锁",
+  "内存管理",
+  "虚拟存储",
+  "文件系统",
+  "I/O 与设备",
+  "磁盘调度"
+ ]
+};
+</script>
+<script>/* ==========================================================================
+   OSQ 界面逻辑
+   ========================================================================== */
+(function () {
+  'use strict';
+  var OSQ = window.OSQ, CONTENT = window.OsqContent;
+  var ITEMS = CONTENT.items, CHAPTERS = CONTENT.chapters;
+
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function shuffle(a) {
+    var x = a.slice();
+    for (var i = x.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = x[i]; x[i] = x[j]; x[j] = t;
+    }
+    return x;
+  }
+  function now() { return Date.now(); }
+  function humanTime(ts) {
+    if (!ts) return '—';
+    var d = Math.floor((now() - ts) / 1000);
+    if (d < 60) return '刚刚';
+    if (d < 3600) return Math.floor(d / 60) + ' 分钟前';
+    if (d < 86400) return Math.floor(d / 3600) + ' 小时前';
+    return Math.floor(d / 86400) + ' 天前';
+  }
+  // 表格在窄屏上要能横向滚动，统一套一层容器
+  function wrapTables(root) {
+    $$('table.tbl', root).forEach(function (t) {
+      var p = t.parentNode;
+      if (p && p.classList && p.classList.contains('tblwrap')) return;
+      var d = document.createElement('div');
+      d.className = 'tblwrap';
+      p.insertBefore(d, t);
+      d.appendChild(t);
+    });
+  }
+  function toast(msg) {
+    var el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('show'); }, 1800);
+  }
+
+  /* ---------------------------- 本地存储 ---------------------------- */
+  var KEY = 'osq.progress.v1', TKEY = 'osq.theme.v1';
+  var store = { stats: {}, wrong: {}, exam: null, examResult: null };
+  function loadStore() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var o = JSON.parse(raw);
+      if (!o || typeof o !== 'object') return;
+      store.stats = (o.stats && typeof o.stats === 'object') ? o.stats : {};
+      store.wrong = (o.wrong && typeof o.wrong === 'object') ? o.wrong : {};
+      store.exam = o.exam || null;
+      store.examResult = o.examResult || null;
+    } catch (e) { store = { stats: {}, wrong: {}, exam: null, examResult: null }; }
+  }
+  function saveStore() {
+    try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) { /* 隐私模式等：忽略 */ }
+  }
+  function record(chapter, ok) {
+    var s = store.stats[chapter] || (store.stats[chapter] = { n: 0, ok: 0, last: 0 });
+    s.n++; if (ok) s.ok++;
+    s.last = now();
+    saveStore();
+  }
+  function wrongAdd(id, chapter) {
+    var w = store.wrong[id] || (store.wrong[id] = { chapter: chapter, streak: 0, at: 0 });
+    w.streak = 0; w.at = now();
+    saveStore();
+  }
+  function wrongHit(id) {
+    var w = store.wrong[id];
+    if (!w) return false;
+    w.streak = (w.streak || 0) + 1;
+    w.at = now();
+    if (w.streak >= 2) { delete store.wrong[id]; saveStore(); return true; }
+    saveStore();
+    return false;
+  }
+
+  /* ---------------------------- 状态 ---------------------------- */
+  var view = {
+    tab: 'calc',
+    calc: { topic: 'banker', diff: 'std', q: null, counted: false },
+    concept: { mode: 'chapter', chapter: '全部', state: {} },
+    exam: null
+  };
+
+  /* ---------------------------- 主题 ---------------------------- */
+  try {
+    var savedTheme = localStorage.getItem(TKEY);
+    if (savedTheme === 'dark' || savedTheme === 'light') document.documentElement.dataset.theme = savedTheme;
+  } catch (e) { /* ignore */ }
+  function syncTop() {
+    var t = document.querySelector('.top');
+    if (t) document.documentElement.style.setProperty('--topH', t.offsetHeight + 'px');
+  }
+  window.addEventListener('resize', syncTop);
+
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem(TKEY, next); } catch (e) { /* ignore */ }
+  }
+
+  /* ---------------------------- 标签页 ---------------------------- */
+  function switchTab(name) {
+    view.tab = name;
+    $$('.tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === name); });
+    $$('.panel').forEach(function (p) { p.classList.toggle('on', p.id === 'tab-' + name); });
+    if (name === 'concept') renderConcept();
+    if (name === 'wrong') renderWrong();
+    if (name === 'stats') renderStats();
+    if (name === 'exam') renderExamEntry();
+    if (name === 'calc' && !$('#calcCard')) renderCalc();
+    syncTop();
+    window.scrollTo(0, 0);
+  }
+
+  /* ============================ ① 专项计算 ============================ */
+  function newCalc(topic, diff) {
+    if (topic) view.calc.topic = topic;
+    if (diff) view.calc.diff = diff;
+    var seed = Math.floor(Math.random() * 2000000000);
+    view.calc.q = OSQ.gen(view.calc.topic, seed, view.calc.diff);
+    view.calc.counted = false;
+    renderCalc();
+  }
+
+  function fieldHTML(s) {
+    var wide = (s.label || '').length > 22 ? ' wide' : '';
+    if (s.type === 'select') {
+      var opts = s.options.map(function (o) {
+        return '<option value="' + esc(o[0]) + '">' + esc(o[1]) + '</option>';
+      }).join('');
+      return '<label class="field' + wide + '"><span>' + s.label + '</span>' +
+        '<select data-key="' + s.key + '"><option value="">请选择</option>' + opts + '</select></label>';
+    }
+    var type = s.type === 'number' ? 'number' : 'text';
+    return '<label class="field' + wide + '"><span>' + s.label + '</span>' +
+      '<input data-key="' + s.key + '" type="' + type + '" inputmode="' +
+      (type === 'number' ? 'decimal' : 'text') + '"' + (type === 'number' ? ' step="any"' : '') +
+      ' placeholder="' + esc(s.placeholder || '') + '"></label>';
+  }
+
+  function renderCalc() {
+    var box = $('#calcBox');
+    if (!box) return;
+    var q = view.calc.q;
+    if (!q) { newCalc(); return; }
+    $$('#topicChips .chip').forEach(function (b) {
+      b.classList.toggle('on', b.dataset.topic === view.calc.topic);
+    });
+    $$('#diffSeg button').forEach(function (b) {
+      b.classList.toggle('on', b.dataset.diff === view.calc.diff);
+    });
+    var html = '<article class="card" id="calcCard">' +
+      '<div class="qhead"><h2>' + q.title + '</h2>' +
+      '<span class="badge chapter">' + q.chapter + '</span>' +
+      '<span class="badge">' + (q.diff === 'easy' ? '简单' : '标准') + '</span></div>' +
+      '<div class="prompt">' + q.promptHTML + '</div>' +
+      '<div class="answers">' + q.inputSpec.map(fieldHTML).join('') + '</div>' +
+      '<div class="actions">' +
+      '<button class="btn primary" data-act="calc-submit">提交</button>' +
+      '<button class="btn" data-act="calc-new">换一题</button>' +
+      '<button class="btn ghost" data-act="calc-sol">直接看解析</button>' +
+      '</div><div class="feedback" id="calcFb"></div>' +
+      '<div class="solution" id="calcSol" hidden><h3>参考答案与解析</h3>' + q.answerHTML + '</div>' +
+      '</article>';
+    box.innerHTML = html;
+    wrapTables(box);
+  }
+
+  function readCalcInputs() {
+    var o = {};
+    $$('#calcCard [data-key]').forEach(function (el) { o[el.dataset.key] = el.value.trim(); });
+    return o;
+  }
+
+  function submitCalc() {
+    var q = view.calc.q;
+    var r = q.check(readCalcInputs());
+    var fb = $('#calcFb');
+    var html = '<div class="head">' + (r.ok ? '✓ 全对' : '✗ 有错误') + '</div><ul class="parts">';
+    r.parts.forEach(function (p) {
+      html += '<li><span class="' + (p.ok ? 'yes' : 'no') + '">' + (p.ok ? '✓' : '✗') + '</span>' +
+        '<span>' + p.name + '</span><span class="want">正确答案：' + esc(p.want) + '</span></li>';
+    });
+    html += '</ul>';
+    fb.className = 'feedback show ' + (r.ok ? 'ok' : 'bad');
+    fb.innerHTML = html;
+    $('#calcSol').hidden = false;
+    if (!view.calc.counted) {
+      view.calc.counted = true;
+      record(q.chapter, r.ok);
+    }
+  }
+
+  /* ============================ ② 概念题 ============================ */
+  function tokenize(s) {
+    s = String(s || '');
+    s = s.replace(/(\d)\s+(ms|毫秒|mb|kb|gb|b)\b/gi, '$1$2');
+    s = s.replace(/请求(和|与|并)保持|占有(并|且)等待/g, 'REQHOLD');
+    s = s.replace(/[和与]/g, '、');
+    return s.split(/[、,，;；\/\s]+/).filter(Boolean).map(normToken);
+  }
+  function normToken(s) {
+    var t = String(s).toLowerCase().replace(/\s+/g, '');
+    t = t.replace(/[，。、；;：:,.!！?？"'“”‘’()（）\[\]【】<>《》\-—_\\\/]/g, '');
+    var map = {
+      '主存': '内存', '阻塞': '等待', '运行': '执行', '处理器': '处理机',
+      '可抢占': '抢占', '不可抢占': '非抢占', '短作业': '短作业优先', '短进程': '短进程优先',
+      'reqhold': '请求和保持', '占有并等待': '请求和保持', '占有且等待': '请求和保持'
+    };
+    if (map[t]) t = map[t];
+    if (/^\d/.test(t)) t = t.replace(/(毫秒|ms|mb|kb|gb|b|个|台|块|次)$/, '');
+    return t;
+  }
+  function fillMatch(input, accept) {
+    var toks = tokenize(input);
+    if (!toks.length) return false;
+    for (var i = 0; i < accept.length; i++) {
+      var acc = accept[i].map(normToken);
+      if (acc.length === toks.length) {
+        var same = true;
+        for (var j = 0; j < acc.length; j++) if (acc[j] !== toks[j]) { same = false; break; }
+        if (same) return true;
+      }
+      if (acc.length === 1 && toks.length === 1) {
+        if (toks[0] === acc[0]) return true;
+        if (!/^\d+$/.test(acc[0]) && toks[0].indexOf(acc[0]) >= 0) return true;
+      }
+      if (acc.length === 1 && acc[0] !== '' && toks.join('') === acc[0]) return true;
+    }
+    return false;
+  }
+
+  function findItem(id) {
+    for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === id) return ITEMS[i];
+    return null;
+  }
+
+  function conceptPool() {
+    var c = view.concept;
+    if (c.mode === 'one') return c.oneItem ? [c.oneItem] : [];
+    if (c.mode === 'wrong') return ITEMS.filter(function (i) { return !!store.wrong[i.id]; });
+    if (c.mode === 'random20') {
+      if (!c.randomList) c.randomList = shuffle(ITEMS).slice(0, 20);
+      return c.randomList.filter(function (i) { return i; });
+    }
+    if (c.chapter === '全部') return ITEMS.slice();
+    return ITEMS.filter(function (i) { return i.chapter === c.chapter; });
+  }
+
+  function renderConceptControls() {
+    var chapters = ['全部'].concat(CHAPTERS);
+    var html = '';
+    chapters.forEach(function (ch) {
+      var n = ch === '全部' ? ITEMS.length : ITEMS.filter(function (i) { return i.chapter === ch; }).length;
+      html += '<button class="chip' + (view.concept.mode === 'chapter' && view.concept.chapter === ch ? ' on' : '') +
+        '" data-act="chapter" data-ch="' + ch + '">' + ch + '<span class="n">' + n + '</span></button>';
+    });
+    html += '<button class="chip' + (view.concept.mode === 'random20' ? ' on' : '') +
+      '" data-act="random20">随机 20 题</button>';
+    if (Object.keys(store.wrong).length) {
+      html += '<button class="chip' + (view.concept.mode === 'wrong' ? ' on' : '') +
+        '" data-act="practice-wrong">只练错题<span class="n">' + Object.keys(store.wrong).length + '</span></button>';
+    }
+    $('#conceptChips').innerHTML = html;
+  }
+
+  function renderConcept() {
+    renderConceptControls();
+    var list = conceptPool();
+    var box = $('#conceptList');
+    if (!list.length) {
+      box.innerHTML = '<div class="empty">这个范围里还没有题目。</div>';
+      return;
+    }
+    var title = view.concept.mode === 'one' ? '单题练习' :
+      view.concept.mode === 'wrong' ? '只练错题' :
+      view.concept.mode === 'random20' ? '随机 20 题' : ('章节：' + view.concept.chapter);
+    box.innerHTML = '<div class="toolbar"><span class="badge">' + title + ' · 共 ' + list.length + ' 题</span>' +
+      '<span class="badge">答错的题会自动进错题本</span></div>' +
+      '<div class="clist">' + list.map(cardHTML).join('') + '</div>';
+    wrapTables(box);
+  }
+
+  function cardHTML(item) {
+    var st = view.concept.state[item.id];
+    var answered = !!st;
+    var h = '<article class="ccard" data-cid="' + item.id + '">' +
+      '<div class="meta"><span>' + item.source + '</span><span class="badge chapter">' + item.chapter + '</span>' +
+      '<span class="badge">' + ({ mcq: '单选', judge: '判断', fill: '填空', short: '简答' }[item.type]) + '</span></div>' +
+      '<div class="stem">' + item.stem + '</div>';
+
+    if (item.type === 'mcq') {
+      h += '<div class="opts">' + item.options.map(function (o, i) {
+        var k = 'ABCD'[i];
+        var cls = 'opt';
+        if (answered) {
+          if (k === item.answer) cls += ' correct';
+          else if (st.val === k) cls += ' wrong';
+          else cls += ' dim';
+          if (st.val === k) cls += ' chosen';
+        }
+        return '<button class="' + cls + '"' + (answered ? '' : ' data-act="pick"') + ' data-v="' + k + '"><span class="k">' + k +
+          '</span><span>' + o + '</span></button>';
+      }).join('') + '</div>';
+    } else if (item.type === 'judge') {
+      h += '<div class="judgebar">' + ['√', '×'].map(function (v) {
+        var cls = 'opt';
+        if (answered) {
+          if (v === item.answer) cls += ' correct';
+          else if (st.val === v) cls += ' wrong';
+          else cls += ' dim';
+          if (st.val === v) cls += ' chosen';
+        }
+        return '<button class="' + cls + '"' + (answered ? '' : ' data-act="pick"') + ' data-v="' + v + '">' +
+          '<span class="k">' + v + '</span><span>' + (v === '√' ? '对' : '错') + '</span></button>';
+      }).join('') + '</div>';
+    } else if (item.type === 'fill' && !answered) {
+      h += '<div class="fillrow"><input data-fill="' + item.id + '" type="text" placeholder="写出答案，多个空用顿号或逗号隔开">' +
+        '<button class="btn" data-act="fill-submit">提交</button></div>';
+    } else if (item.type === 'short' && !answered) {
+      h += '<div class="actions"><button class="btn" data-act="short-reveal">查看参考答案</button></div>';
+    }
+
+    if (answered) h += revealHTML(item, st);
+    return h + '</article>';
+  }
+
+  function revealHTML(item, st) {
+    var neutral = (item.type === 'short' && st.ok === null);
+    var cls = neutral ? '' : (st.ok ? 'ok' : 'bad');
+    var h = '<div class="reveal ' + cls + '">';
+    if (neutral) {
+      h += '<div class="verdict" style="color:var(--muted)">参考答案，请自评</div>';
+    } else {
+      h += '<div class="verdict">' + (st.ok ? '✓ 答对了' : '✗ 答错了') + '</div>';
+    }
+    if (item.type === 'mcq' || item.type === 'judge') {
+      h += '<div class="ans">答案：<b>' + item.answerText + '</b>' + (st.ok ? '' : '（你选的是 ' + st.val + '）') + '</div>';
+    } else if (item.type === 'fill') {
+      h += '<div class="ans">答案：<b>' + esc(item.answer) + '</b>' + (st.ok ? '' : '（你写的是 ' + esc(st.val || '空') + '）') + '</div>';
+    }
+    h += '<div class="why"><b>理由：</b>' + item.reason + '</div>';
+    if (item.type === 'short') h += '<div class="full">' + (item.answerHTML || '') + '</div>';
+    if (item.note) h += '<div class="why" style="color:var(--warn)">注：' + item.note + '</div>';
+    if (item.type === 'short' && st.self === undefined) {
+      h += '<div class="selfrow">你写对了吗？<button data-act="self" data-v="ok">我答对了</button>' +
+        '<button data-act="self" data-v="bad">我答错了</button></div>';
+    } else if (item.type === 'short') {
+      h += '<div class="selfrow">已自评：' + (st.self === 'ok' ? '答对' : '答错') + '</div>';
+    }
+    if (!neutral) {
+      var w = store.wrong[item.id];
+      h += '<div class="selfrow"><button data-act="redo">再做一次</button>' +
+        (w ? '<span>连对 ' + (w.streak || 0) + '/2 次后移出错题本</span>' : '') + '</div>';
+    }
+    return h + '</div>';
+  }
+
+  function refreshCard(id) {
+    var el = document.querySelector('[data-cid="' + id + '"]');
+    var item = findItem(id);
+    if (!el || !item) return;
+    if (view.concept.mode === 'wrong' && !store.wrong[id]) {
+      el.parentNode.removeChild(el);
+      toast('连续答对 2 次，已移出错题本');
+      renderConceptControls();
+      if (!conceptPool().length) renderConcept();
+    } else {
+      el.outerHTML = cardHTML(item);
+      var fresh = document.querySelector('[data-cid="' + id + '"]');
+      if (fresh) wrapTables(fresh);
+    }
+  }
+
+  function submitFill(id, inputEl) {
+    var item = findItem(id);
+    if (!item) return;
+    var val = inputEl ? inputEl.value : '';
+    if (!String(val).trim()) { toast('先写答案再提交'); return; }
+    var ok = fillMatch(val, item.accept);
+    view.concept.state[id] = { ok: ok, val: val };
+    if (ok) wrongHit(id); else wrongAdd(id, item.chapter);
+    record(item.chapter, ok);
+    refreshCard(id);
+  }
+
+  /* ============================ ③ 模拟整卷 ============================ */
+  var EXAM_MIN = 120;
+  var examTimer = null;
+
+  function buildExam() {
+    var mcq = shuffle(ITEMS.filter(function (i) { return i.type === 'mcq'; })).slice(0, 15);
+    var judge = shuffle(ITEMS.filter(function (i) { return i.type === 'judge'; })).slice(0, 10);
+    var fill = shuffle(ITEMS.filter(function (i) { return i.type === 'fill'; })).slice(0, 5);
+    var extra = ['inode', 'addr', 'sched', 'firstfit'][Math.floor(Math.random() * 4)];
+    var comps = [
+      { topic: 'banker', pts: 12, seed: Math.floor(Math.random() * 2e9) },
+      { topic: 'paging', pts: 12, seed: Math.floor(Math.random() * 2e9) },
+      { topic: 'disk', pts: 6, seed: Math.floor(Math.random() * 2e9) },
+      { topic: extra, pts: 10, seed: Math.floor(Math.random() * 2e9) }
+    ];
+    return {
+      mcq: mcq.map(function (i) { return i.id; }),
+      judge: judge.map(function (i) { return i.id; }),
+      fill: fill.map(function (i) { return i.id; }),
+      comps: comps,
+      answers: {},
+      deadline: now() + EXAM_MIN * 60000,
+      submitted: false,
+      startedAt: now()
+    };
+  }
+
+  function examQuestions(exam) {
+    var byId = {};
+    ITEMS.forEach(function (i) { byId[i.id] = i; });
+    return {
+      mcq: exam.mcq.map(function (id) { return byId[id]; }),
+      judge: exam.judge.map(function (id) { return byId[id]; }),
+      fill: exam.fill.map(function (id) { return byId[id]; }),
+      comps: exam.comps.map(function (c) { return OSQ.gen(c.topic, c.seed, 'std'); })
+    };
+  }
+
+  function renderExamEntry() {
+    var box = $('#examBox');
+    if (view.exam && !view.exam.submitted) { renderExamPaper(); return; }
+    var resume = store.exam && store.exam.deadline > now() && !store.exam.submitted;
+    var last = store.examResult;
+    var html = '<article class="card"><div class="qhead"><h2>模拟整卷</h2>' +
+      '<span class="badge chapter">100 分 · 120 分钟</span></div>' +
+      '<p>按学校试卷结构随机组卷：</p>' +
+      '<ul class="ops"><li><b>一、单项选择题</b> 15 题 × 2 分 = 30 分</li>' +
+      '<li><b>二、判断题</b> 10 题 × 1 分 = 10 分</li>' +
+      '<li><b>三、填空简答</b> 5 题 × 4 分 = 20 分</li>' +
+      '<li><b>四、综合题</b> 40 分：银行家 12 + 页面置换 12 + 磁盘调度 6 + 其余 10</li></ul>' +
+      '<p class="score-sub">选择题、判断题、填空题自动判分；综合题按小问给分。交卷后按考点统计得分率。</p>' +
+      '<div class="actions">' +
+      '<button class="btn primary" data-act="exam-start">开始考试</button>' +
+      (resume ? '<button class="btn" data-act="exam-resume">继续上次未完成的考试</button>' : '') +
+      '</div>';
+    if (last) {
+      html += '<div class="reveal" style="margin-top:16px"><div class="verdict">上次成绩：' +
+        last.score + ' / 100（' + last.time + '）</div></div>';
+    }
+    html += '</article>';
+    box.innerHTML = html;
+  }
+
+  function startExam(resume) {
+    if (resume && store.exam) view.exam = store.exam;
+    else { view.exam = buildExam(); store.exam = view.exam; saveStore(); }
+    renderExamPaper();
+    startTimer();
+  }
+
+  function startTimer() {
+    if (examTimer) clearInterval(examTimer);
+    examTimer = setInterval(function () {
+      if (!view.exam || view.exam.submitted) { clearInterval(examTimer); return; }
+      var left = Math.max(0, view.exam.deadline - now());
+      var el = $('#examTimer');
+      if (el) {
+        el.textContent = fmtDur(left);
+        el.classList.toggle('low', left < 5 * 60000);
+      }
+      if (left <= 0) { clearInterval(examTimer); submitExam(true); }
+    }, 500);
+    updateTimerOnce();
+  }
+  function updateTimerOnce() {
+    var el = $('#examTimer');
+    if (el && view.exam) {
+      var left = Math.max(0, view.exam.deadline - now());
+      el.textContent = fmtDur(left);
+    }
+  }
+  function fmtDur(ms) {
+    var s = Math.floor(ms / 1000);
+    var m = Math.floor(s / 60), ss = s % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (ss < 10 ? '0' : '') + ss;
+  }
+
+  function renderExamPaper() {
+    var ex = view.exam, Q = examQuestions(ex);
+    var h = '<div class="exambar"><span class="score-sub">已答 <b id="ansCount">' + countAnswered(ex) + '</b> / 30</span>' +
+      '<button class="btn primary" data-act="exam-submit">交卷</button>' +
+      '<span class="timer" id="examTimer">' + fmtDur(ex.deadline - now()) + '</span></div>';
+
+    h += '<div class="examsec"><h2>一、单项选择题</h2><div class="desc">15 题，每题 2 分，共 30 分</div>';
+    Q.mcq.forEach(function (it, i) {
+      var key = 'm' + i, val = ex.answers[key];
+      h += '<div class="eq" data-qkey="' + key + '"><div class="stem"><span class="num">' + (i + 1) + '.</span>' + it.stem + '</div>' +
+        '<div class="opts">' + it.options.map(function (o, k) {
+          var L = 'ABCD'[k];
+          return '<button class="opt' + (val === L ? ' chosen' : '') + '" data-act="exam-pick" data-key="' + key +
+            '" data-v="' + L + '"><span class="k">' + L + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div></div>';
+    });
+    h += '</div>';
+
+    h += '<div class="examsec"><h2>二、判断题</h2><div class="desc">10 题，每题 1 分，共 10 分（对打 √，错打 ×）</div>';
+    Q.judge.forEach(function (it, i) {
+      var key = 'j' + i, val = ex.answers[key];
+      h += '<div class="eq" data-qkey="' + key + '"><div class="stem"><span class="num">' + (i + 1) + '.</span>' + it.stem + '</div>' +
+        '<div class="judgebar">' +
+        '<button class="opt' + (val === '√' ? ' chosen' : '') + '" data-act="exam-pick" data-key="' + key + '" data-v="√"><span class="k">√</span><span>对</span></button>' +
+        '<button class="opt' + (val === '×' ? ' chosen' : '') + '" data-act="exam-pick" data-key="' + key + '" data-v="×"><span class="k">×</span><span>错</span></button>' +
+        '</div></div>';
+    });
+    h += '</div>';
+
+    h += '<div class="examsec"><h2>三、填空简答</h2><div class="desc">5 题，每题 4 分，共 20 分</div>';
+    Q.fill.forEach(function (it, i) {
+      var key = 'f' + i;
+      h += '<div class="eq" data-qkey="' + key + '"><div class="stem"><span class="num">' + (i + 1) + '.</span>' + it.stem + '</div>' +
+        '<div class="fillrow"><input data-ekey="' + key + '" type="text" value="' + esc(ex.answers[key] || '') +
+        '" placeholder="写出答案"></div></div>';
+    });
+    h += '</div>';
+
+    h += '<div class="examsec"><h2>四、综合题</h2><div class="desc">' +
+      ex.comps.map(function (c) { return c.pts + ' 分'; }).join(' + ') + '，共 40 分</div>';
+    Q.comps.forEach(function (q, i) {
+      var key = 'c' + i;
+      var ans = ex.answers[key] || {};
+      h += '<div class="eq" data-qkey="' + key + '"><div class="qhead" style="margin:0 0 8px;padding:0;border:0">' +
+        '<b>综合题 ' + (i + 1) + '（' + ex.comps[i].pts + ' 分）</b><span class="badge chapter">' + q.chapter + '</span></div>' +
+        '<div class="prompt">' + q.promptHTML + '</div><div class="answers">' +
+        q.inputSpec.map(function (s) {
+          var v = ans[s.key] === undefined ? '' : ans[s.key];
+          var ekey = key + '.' + s.key;
+          if (s.type === 'select') {
+            return '<label class="field"><span>' + s.label + '</span><select data-ekey="' + ekey + '">' +
+              '<option value="">请选择</option>' + s.options.map(function (o) {
+                return '<option value="' + esc(o[0]) + '"' + (v === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
+              }).join('') + '</select></label>';
+          }
+          return '<label class="field"><span>' + s.label + '</span><input data-ekey="' + ekey + '" type="' +
+            (s.type === 'number' ? 'number' : 'text') + '" inputmode="' + (s.type === 'number' ? 'decimal' : 'text') +
+            '" step="any" value="' + esc(v) + '"></label>';
+        }).join('') + '</div></div>';
+    });
+    h += '</div>';
+    $('#examBox').innerHTML = h;
+    wrapTables($('#examBox'));
+    startTimer();
+  }
+
+  function countAnswered(ex) { return Object.keys(ex.answers).filter(function (k) {
+    var v = ex.answers[k];
+    return v !== '' && v !== undefined && v !== null;
+  }).length; }
+
+  function submitExam(auto) {
+    var ex = view.exam;
+    if (!ex || ex.submitted) return;
+    if (!auto && !confirm('确定交卷吗？未作答的题目按 0 分计。')) return;
+    var Q = examQuestions(ex);
+    var byChapter = {}, total = 0, detail = [];
+
+    function addScore(ch, got, full) {
+      var c = byChapter[ch] || (byChapter[ch] = { got: 0, full: 0 });
+      c.got += got; c.full += full;
+      total += got;
+    }
+
+    Q.mcq.forEach(function (it, i) {
+      var v = ex.answers['m' + i], ok = v === it.answer;
+      addScore(it.chapter, ok ? 2 : 0, 2);
+      record(it.chapter, ok);
+      if (!ok) detail.push({ src: it.source, stem: it.stem, want: it.answerText, got: v || '未答' });
+    });
+    Q.judge.forEach(function (it, i) {
+      var v = ex.answers['j' + i], ok = v === it.answer;
+      addScore(it.chapter, ok ? 1 : 0, 1);
+      record(it.chapter, ok);
+      if (!ok) detail.push({ src: it.source, stem: it.stem, want: it.answer, got: v || '未答' });
+    });
+    Q.fill.forEach(function (it, i) {
+      var v = ex.answers['f' + i] || '', ok = fillMatch(v, it.accept);
+      addScore(it.chapter, ok ? 4 : 0, 4);
+      record(it.chapter, ok);
+      if (!ok) detail.push({ src: it.source, stem: it.stem, want: it.answer, got: v || '未答' });
+    });
+    Q.comps.forEach(function (q, i) {
+      var c = ex.comps[i], ans = ex.answers['c' + i] || {};
+      var r = q.check(ans);
+      var right = r.parts.filter(function (p) { return p.ok; }).length;
+      var got = Math.round(c.pts * right / r.parts.length * 2) / 2;
+      addScore(q.chapter, got, c.pts);
+      record(q.chapter, right === r.parts.length);
+      if (right < r.parts.length) {
+        detail.push({ src: '模拟卷 · 综合题 ' + (i + 1), stem: q.title,
+                      want: r.parts.filter(function (p) { return !p.ok; }).map(function (p) { return p.name + '：' + p.want; }).join('；'),
+                      got: '有错误' });
+      }
+    });
+
+    ex.submitted = true;
+    ex.score = Math.round(total * 10) / 10;
+    store.examResult = { score: ex.score, time: new Date().toLocaleString('zh-CN'), byChapter: byChapter };
+    store.exam = null;
+    saveStore();
+    if (examTimer) clearInterval(examTimer);
+    renderExamResult(ex, byChapter, detail);
+  }
+
+  function renderExamResult(ex, byChapter, detail) {
+    var chapters = Object.keys(byChapter).map(function (ch) {
+      var c = byChapter[ch];
+      return { ch: ch, got: c.got, full: c.full, pct: c.full ? c.got / c.full : 0 };
+    }).sort(function (a, b) { return a.pct - b.pct; });
+    var weak = chapters.filter(function (c) { return c.full > 0; }).slice(0, 2);
+
+    var h = '<article class="card"><div class="qhead"><h2>成绩单</h2><span class="badge chapter">模拟卷</span></div>' +
+      '<div class="score-big">' + ex.score + ' <span class="score-sub">/ 100</span></div>' +
+      '<p class="score-sub">' + (ex.score >= 60 ? '及格了，继续巩固最弱的考点。' : '还没到 60 分，先把下面的最弱考点过一遍。') + '</p>' +
+      '<h3 style="margin-top:18px">按考点得分率</h3><div class="tblwrap"><table class="tbl"><thead><tr>' +
+      '<th>考点</th><th>得分</th><th>满分</th><th>得分率</th></tr></thead><tbody>';
+    chapters.forEach(function (c) {
+      h += '<tr><td style="text-align:left">' + c.ch + '</td><td>' + c.got + '</td><td>' + c.full + '</td><td>' +
+        Math.round(c.pct * 100) + '%</td></tr>';
+    });
+    h += '</tbody></table></div>';
+    if (weak.length) {
+      h += '<p class="warn" style="margin-top:12px">最需要补的两个考点：<b>' +
+        weak.map(function (c) { return c.ch + '（' + Math.round(c.pct * 100) + '%）'; }).join('、') + '</b></p>';
+      h += '<div class="actions">' + weak.map(function (c) {
+        return '<button class="btn" data-act="go-chapter" data-ch="' + c.ch + '">去练「' + c.ch + '」</button>';
+      }).join('') + '</div>';
+    }
+    if (detail.length) {
+      h += '<h3 style="margin-top:20px">错题回顾（' + detail.length + '）</h3><div class="clist">';
+      detail.forEach(function (d) {
+        h += '<div class="ccard"><div class="meta"><span>' + d.src + '</span></div>' +
+          '<div class="stem">' + d.stem + '</div>' +
+          '<div class="reveal bad" style="margin-top:8px"><div class="ans">正确答案：<b>' + esc(d.want) +
+          '</b></div><div class="why">你的答案：' + esc(d.got) + '</div></div></div>';
+      });
+      h += '</div>';
+    }
+    h += '<div class="actions" style="margin-top:18px"><button class="btn primary" data-act="exam-again">再来一套</button>' +
+      '<button class="btn" data-act="tab" data-tab="stats">看统计</button></div></article>';
+    $('#examBox').innerHTML = h;
+    wrapTables($('#examBox'));
+    window.scrollTo(0, 0);
+  }
+
+  /* ============================ ④ 错题本 ============================ */
+  function renderWrong() {
+    var ids = Object.keys(store.wrong);
+    var box = $('#wrongBox');
+    if (!ids.length) {
+      box.innerHTML = '<div class="empty">错题本是空的。<br>做概念题或模拟卷时答错的题会自动收进来，连续答对 2 次后移出。</div>';
+      return;
+    }
+    var groups = {};
+    ids.forEach(function (id) {
+      var w = store.wrong[id];
+      (groups[w.chapter] = groups[w.chapter] || []).push(id);
+    });
+    var h = '<div class="toolbar"><button class="btn primary" data-act="practice-wrong">只练错题（' + ids.length + '）</button>' +
+      '<span class="badge">连续答对 2 次自动移出</span></div>';
+    Object.keys(groups).forEach(function (ch) {
+      h += '<h3 style="margin:18px 0 8px;font-size:15px">' + ch + ' <span class="score-sub">' + groups[ch].length + ' 题</span></h3>';
+      h += '<div class="clist">';
+      groups[ch].forEach(function (id) {
+        var it = findItem(id), w = store.wrong[id];
+        if (!it) return;
+        h += '<div class="ccard"><div class="meta"><span>' + it.source + '</span><span class="badge chapter">' +
+          it.chapter + '</span><span class="badge">连对 ' + (w.streak || 0) + '/2</span></div>' +
+          '<div class="stem">' + it.stem + '</div>' +
+          '<div class="actions"><button class="btn small" data-act="practice-one" data-id="' + id + '">练这题</button></div></div>';
+      });
+      h += '</div>';
+    });
+    box.innerHTML = h;
+  }
+
+  /* ============================ ⑤ 统计 ============================ */
+  function renderStats() {
+    var chapters = CHAPTERS.slice();
+    Object.keys(store.stats).forEach(function (c) { if (chapters.indexOf(c) < 0) chapters.push(c); });
+    var totalN = 0, totalOk = 0;
+    chapters.forEach(function (ch) {
+      var s = store.stats[ch];
+      if (s) { totalN += s.n; totalOk += s.ok; }
+    });
+    var h = '<div class="statgrid">' +
+      '<div class="stat"><div class="k">累计做题</div><div class="v">' + totalN + '</div></div>' +
+      '<div class="stat"><div class="k">总正确率</div><div class="v">' + (totalN ? Math.round(totalOk / totalN * 100) + '%' : '—') + '</div></div>' +
+      '<div class="stat"><div class="k">错题本</div><div class="v">' + Object.keys(store.wrong).length + '</div></div>' +
+      '<div class="stat"><div class="k">最近一次模拟</div><div class="v">' + (store.examResult ? store.examResult.score : '—') +
+      (store.examResult ? '<span class="score-sub"> / 100</span>' : '') + '</div></div></div>';
+
+    h += '<div class="card"><div class="qhead"><h2>各考点练习情况</h2></div><div class="tblwrap"><table class="tbl stats-table"><thead><tr>' +
+      '<th>考点</th><th>做题数</th><th style="width:42%">正确率</th><th>最近练习</th></tr></thead><tbody>';
+    var any = false;
+    chapters.forEach(function (ch) {
+      var s = store.stats[ch];
+      if (!s || !s.n) return;
+      any = true;
+      var pct = Math.round(s.ok / s.n * 100);
+      h += '<tr><td>' + ch + '</td><td>' + s.n + '</td>' +
+        '<td><div class="rate"><span>' + pct + '%</span><div class="bar"><i class="' + (pct < 60 ? 'low' : '') +
+        '" style="width:' + pct + '%"></i></div></div></td>' +
+        '<td>' + humanTime(s.last) + '</td></tr>';
+    });
+    if (!any) h += '<tr><td colspan="4" style="text-align:center;color:var(--muted)">还没有练习记录</td></tr>';
+    h += '</tbody></table></div></div>';
+
+    h += '<div class="card"><div class="qhead"><h2>进度导出 / 导入</h2></div>' +
+      '<p class="score-sub">换设备或清缓存前，把下面这段 JSON 复制保存；粘贴回来点「导入」即可恢复。</p>' +
+      '<textarea class="export-area" id="exportArea">' + esc(JSON.stringify({ stats: store.stats, wrong: store.wrong }, null, 1)) + '</textarea>' +
+      '<div class="actions"><button class="btn" data-act="copy">复制</button>' +
+      '<button class="btn" data-act="import">导入上面的内容</button></div></div>';
+
+    h += '<div class="card"><div class="qhead"><h2>计算引擎自测</h2></div>' +
+      '<p class="score-sub">固定样例取自真题原卷（含老师更正过的答案），用于确认每道计算题的答案都由同一套计算得出。</p>' +
+      '<div class="actions"><button class="btn" data-act="selftest">运行自测</button></div>' +
+      '<div id="selftestOut" style="margin-top:10px"></div></div>';
+
+    $('#statsBox').innerHTML = h;
+  }
+
+  function runSelftest() {
+    var r = OSQ.runSelfTests();
+    var h = '<div class="selftest">' + r.lines.map(function (l) {
+      return '<div class="' + (l.indexOf('PASS') === 0 ? 'ok' : 'no') + '">' + esc(l) + '</div>';
+    }).join('') + '<div style="margin-top:6px"><b>' + r.pass + ' 项通过，' + r.fail + ' 项失败</b></div></div>';
+    $('#selftestOut').innerHTML = h;
+  }
+
+  /* ============================ 事件 ============================ */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-act]');
+    if (!el) return;
+    var act = el.dataset.act;
+
+    if (act === 'tab') { switchTab(el.dataset.tab); return; }
+
+    /* 计算 */
+    if (act === 'calc-submit') { submitCalc(); return; }
+    if (act === 'calc-new') { newCalc(); return; }
+    if (act === 'calc-sol') { $('#calcSol').hidden = false; return; }
+    if (act === 'topic') { newCalc(el.dataset.topic); return; }
+    if (act === 'diff') { newCalc(null, el.dataset.diff); return; }
+
+    /* 概念 */
+    if (act === 'chapter') {
+      view.concept.mode = 'chapter';
+      view.concept.chapter = el.dataset.ch;
+      view.concept.randomList = null;
+      renderConcept();
+      return;
+    }
+    if (act === 'random20') { view.concept.mode = 'random20'; view.concept.randomList = shuffle(ITEMS).slice(0, 20); renderConcept(); return; }
+    if (act === 'practice-wrong') {
+      view.concept.mode = 'wrong';
+      Object.keys(store.wrong).forEach(function (id) { delete view.concept.state[id]; });
+      switchTab('concept');
+      renderConcept();
+      return;
+    }
+    if (act === 'practice-one') {
+      view.concept.mode = 'wrong';
+      view.concept.onlyId = el.dataset.id;
+      switchTab('concept');
+      var only = [findItem(el.dataset.id)];
+      view.concept.mode = 'one';
+      view.concept.oneItem = only[0];
+      delete view.concept.state[only[0].id];
+      renderConcept();
+      return;
+    }
+    if (act === 'pick') {
+      var card = el.closest('[data-cid]');
+      var item = findItem(card.dataset.cid);
+      var val = el.dataset.v;
+      var ok = val === item.answer;
+      view.concept.state[item.id] = { ok: ok, val: val };
+      if (ok) wrongHit(item.id); else wrongAdd(item.id, item.chapter);
+      record(item.chapter, ok);
+      refreshCard(item.id);
+      return;
+    }
+    if (act === 'fill-submit') {
+      var fc = el.closest('[data-cid]');
+      var inp = $('[data-fill]', fc);
+      submitFill(fc.dataset.cid, inp);
+      return;
+    }
+    if (act === 'short-reveal') {
+      var sc = el.closest('[data-cid]');
+      var si = findItem(sc.dataset.cid);
+      view.concept.state[si.id] = { ok: null, self: undefined, val: '' };
+      sc.outerHTML = cardHTML(si);
+      return;
+    }
+    if (act === 'self') {
+      var sc2 = el.closest('[data-cid]');
+      var si2 = findItem(sc2.dataset.cid);
+      var selfOk = el.dataset.v === 'ok';
+      view.concept.state[si2.id] = { ok: selfOk, self: selfOk ? 'ok' : 'bad', val: '自评' };
+      if (selfOk) wrongHit(si2.id); else wrongAdd(si2.id, si2.chapter);
+      record(si2.chapter, selfOk);
+      sc2.outerHTML = cardHTML(si2);
+      return;
+    }
+    if (act === 'redo') {
+      var rc = el.closest('[data-cid]');
+      delete view.concept.state[rc.dataset.cid];
+      refreshCard(rc.dataset.cid);
+      return;
+    }
+
+    /* 模拟卷 */
+    if (act === 'exam-start') { startExam(false); return; }
+    if (act === 'exam-resume') { startExam(true); return; }
+    if (act === 'exam-again') { view.exam = null; startExam(false); return; }
+    if (act === 'exam-submit') { submitExam(false); return; }
+    if (act === 'exam-pick') {
+      var key = el.dataset.key;
+      view.exam.answers[key] = el.dataset.v;
+      saveStore();
+      $$('[data-key="' + key + '"]', $('#examBox')).forEach(function (b) {
+        b.classList.toggle('chosen', b.dataset.v === el.dataset.v);
+      });
+      var c = $('#ansCount');
+      if (c) c.textContent = countAnswered(view.exam);
+      return;
+    }
+    if (act === 'go-chapter') {
+      view.concept.mode = 'chapter';
+      view.concept.chapter = el.dataset.ch;
+      view.concept.randomList = null;
+      switchTab('concept');
+      return;
+    }
+
+    /* 统计 */
+    if (act === 'copy') {
+      var ta = $('#exportArea');
+      ta.select();
+      var done = false;
+      try { done = document.execCommand('copy'); } catch (err) { done = false; }
+      if (!done && navigator.clipboard) {
+        navigator.clipboard.writeText(ta.value).then(function () { toast('已复制'); }, function () { toast('复制失败，请手动全选复制'); });
+      } else {
+        toast(done ? '已复制' : '请手动全选复制');
+      }
+      return;
+    }
+    if (act === 'import') {
+      var raw = $('#exportArea').value;
+      try {
+        var o = JSON.parse(raw);
+        if (!o || typeof o !== 'object' || !o.stats) throw new Error('bad');
+        store.stats = o.stats || {};
+        store.wrong = o.wrong || {};
+        saveStore();
+        renderStats();
+        toast('已导入');
+      } catch (err) {
+        toast('内容不是有效的进度 JSON');
+      }
+      return;
+    }
+    if (act === 'selftest') { runSelftest(); return; }
+  });
+
+  // 考试中的输入（填空与综合题）
+  function onExamInput(e) {
+    var el = e.target.closest('[data-ekey]');
+    if (!el || !view.exam || view.exam.submitted) return;
+    var key = el.dataset.ekey;
+    if (key.indexOf('.') > 0) {
+      var parts = key.split('.');
+      var obj = view.exam.answers[parts[0]] || (view.exam.answers[parts[0]] = {});
+      obj[parts[1]] = el.value;
+    } else {
+      view.exam.answers[key] = el.value;
+    }
+    var c = $('#ansCount');
+    if (c) c.textContent = countAnswered(view.exam);
+    saveStore();
+  }
+  document.addEventListener('input', onExamInput);
+  document.addEventListener('change', onExamInput);
+
+  // 概念题填空按回车提交
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter') return;
+    var el = e.target.closest('[data-fill]');
+    if (el) { e.preventDefault(); submitFill(el.dataset.fill, el); }
+  });
+
+  /* ---------------------------- 初始化 ---------------------------- */
+  var inited = false;
+  function init() {
+    if (inited) return;
+    inited = true;
+    loadStore();
+    syncTop();
+    window.__osq = view;       // 便于调试/自动化测试，不影响使用
+    window.__osqStore = store;
+    // 顶部主题按钮
+    $('#themeBtn').addEventListener('click', toggleTheme);
+    // 计算题标签
+    $('#topicChips').innerHTML = OSQ.TOPICS.map(function (t) {
+      return '<button class="chip' + (t.id === 'banker' ? ' on' : '') + '" data-act="topic" data-topic="' +
+        t.id + '">' + t.name + '</button>';
+    }).join('');
+    newCalc();
+    switchTab('calc');
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+  if (document.readyState !== 'loading') init();
+})();
+</script>
+</body>
+</html>
